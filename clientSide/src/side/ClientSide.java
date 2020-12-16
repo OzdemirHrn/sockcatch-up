@@ -1,5 +1,5 @@
 package side;
-// Malik was here
+
 
 import java.io.*; 
 
