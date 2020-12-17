@@ -5,12 +5,17 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author hrnoz
+ * @author harunOzdemir
  */
 
 public class MultipleClients {
    
      public static void main(String... args){
+         /*
+         Burada bazı sıkıntılar var.
+         Eş zamanlı farklı parametrelerle çalıştıramıyorum.
+         Mesajlar birbirine giriyor ve random değer hep aynı oluyor.
+         */
          Runnable bathroomB=new Irun("home/brightness/bathroom4");
          Thread threadBathroomB=new Thread(bathroomB);
          threadBathroomB.start();
