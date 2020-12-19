@@ -7,5 +7,5 @@
 -Timerlar eklenecek  
 -Topiclere göre serverda işlem yapılmıyor şuan. Topiclerin ayırtediciliği kazandırılmalı.  
 -100k message testleri yapılacak  
--MultiClients classı kontrol edilecek
+-MultiClients classı kontrol edilecek  
 **20 aralık atomic saatler eklendi yarın güncellenecek **
