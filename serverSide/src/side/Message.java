@@ -10,13 +10,6 @@ import java.io.Serializable;
 class Message implements Serializable 
 {
 
-    public String getTopic() {
-        return topic;
-    }
-
-    public int getMessage() {
-        return message;
-    }
    private String topic;
    private int message;
 
@@ -27,6 +20,14 @@ class Message implements Serializable
      
      
    }
+   
+    public String getTopic() {
+        return topic;
+    }
+
+    public int getMessage() {
+        return message;
+    }
 
  
 }
