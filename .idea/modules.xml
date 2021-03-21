@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/clientSide/clientSide.iml" filepath="$PROJECT_DIR$/clientSide/clientSide.iml" />
+      <module fileurl="file://$PROJECT_DIR$/serverSide/serverSide.iml" filepath="$PROJECT_DIR$/serverSide/serverSide.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/sockcatch-up.iml" filepath="$PROJECT_DIR$/.idea/sockcatch-up.iml" />
+    </modules>
+  </component>
+</project>
