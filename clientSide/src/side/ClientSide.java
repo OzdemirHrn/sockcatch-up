@@ -1,17 +1,8 @@
 package side;
 
 import java.io.*;
-import java.net.*;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Queue;
-import java.util.Random;
+import java.net.Socket;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-
 /**
  * @author harunOzdemir
  */
@@ -37,7 +28,7 @@ public class ClientSide {
         Bu argument topic olarak görev yapıyor.
         Bu client sadece bu topice message yolluyor
         */
-        Socket clientSocket = new Socket("192.168.1.136", 6789);
+        Socket clientSocket = new Socket("192.168.1.64", 6789);
         /*
         Qmin ve Qmax'ı buradan alsam direkt???
 

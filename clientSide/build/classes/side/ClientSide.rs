@@ -5,4 +5,4 @@ side.createObjects
 side.ClientSide
 side.Counter
 side.Once
-side.Task
+side.WelcomeMessages

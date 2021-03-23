@@ -10,7 +10,7 @@ Subscriber görevi yapacak thread'in Runnable classı
 
 public class PrintQueue implements Runnable {
 
-    private Queue<Task> allClients;
+    private Queue<WelcomeMessages> allClients;
     private final static Counter counter = new Counter();
     private static float start = System.nanoTime();
     private static float end;
@@ -29,7 +29,7 @@ public class PrintQueue implements Runnable {
 
     private LinkedBlockingQueue<Message> incomingMessage;
 
-    public PrintQueue(LinkedBlockingQueue<Message> incomingMessage, int printSleepTime, Queue<Task> allClients) {
+    public PrintQueue(LinkedBlockingQueue<Message> incomingMessage, int printSleepTime, Queue<WelcomeMessages> allClients) {
         this.allClients = allClients;
         this.incomingMessage = incomingMessage;
         this.printSleepTime = printSleepTime;
@@ -44,7 +44,7 @@ public class PrintQueue implements Runnable {
             arrayIndexNumber++;
             totalCounter = totalCounter + incrementOfCounter;
             int totalDropped = 0;
-            for (Task eachClient : allClients) {
+            for (WelcomeMessages eachClient : allClients) {
 
                 // System.out.println("Dropped Messages" + eachClient.dropped);
                 totalDropped += eachClient.dropped;

@@ -10,7 +10,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-    /*
+    /**
     Objectleri Server'a gönderen Thread ve onun Runnable classı
     */
 
@@ -136,7 +136,7 @@ public class sendObjects implements Runnable {
                     int randomSending = getRandomVariable();
 
                     Thread.sleep(sendObjectSleep + randomSending);
-                    outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
+                    //outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
                     //System.out.println(outgoingMessage.peek().getMessage()+"  "+outgoingMessage.peek().getTopic()+"  Queue size is "+outgoingMessage.size());
 
                     /*
@@ -146,7 +146,18 @@ public class sendObjects implements Runnable {
                     //poll-> return and remove yapiyor.
 
                     //timer
+                    float rttTimeStart=System.nanoTime();
+                    outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
                     outToServer.writeObject(outgoingMessage.poll());
+                    float rttTimeEnd=System.nanoTime();
+                    DecimalFormat dfrtt = new DecimalFormat("#.###");
+                    float rttTime = rttTimeStart-rttTimeEnd;
+                    float rtttime1 = rttTime %1000000000;
+                    rttTime = (rttTime-rtttime1)/1000000000;
+                    System.out.println("rttStart "+rttTimeStart+" | rttend"+rttTimeEnd+" | aradaki fark"+ rttTime + " Timer: "+dfrtt.format(rttTime));
+
+
+
                     //timerson
 
                     ////yeni malik

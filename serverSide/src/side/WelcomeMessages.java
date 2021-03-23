@@ -3,13 +3,12 @@ package side;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public final class Task implements Runnable {
+public final class WelcomeMessages implements Runnable {
 
     /*
     Bu class gelen objectleri karşılayan executor thread havuzunun classı
@@ -24,7 +23,7 @@ public final class Task implements Runnable {
     int dropped = 0,Qmin=20,Qmax=80;
 
 
-    public Task(Socket clientSocket, LinkedBlockingQueue<Message> incomingMessage) {
+    public WelcomeMessages(Socket clientSocket, LinkedBlockingQueue<Message> incomingMessage) {
         this.incomingMessage = incomingMessage;
         this.client = clientSocket;
 
@@ -36,12 +35,14 @@ public final class Task implements Runnable {
         while (true) {
 
             try {
+
                 InputStream inputStream = client.getInputStream();
                 ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
 
+                 /**
                 ObjectOutputStream oos = new ObjectOutputStream(client.getOutputStream());
                 oos.writeObject("Hi Client, BU KUYRUK YOUĞUNLUĞUDUR " + incomingMessage.size());
-
+                */
 
                 /*
                 Queueya objectlerin eklendiği kısım
@@ -65,7 +66,7 @@ public final class Task implements Runnable {
                     break;
 
                 } catch (IOException ex1) {
-                    Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex1);
+                    Logger.getLogger(WelcomeMessages.class.getName()).log(Level.SEVERE, null, ex1);
                 }
 
             }
