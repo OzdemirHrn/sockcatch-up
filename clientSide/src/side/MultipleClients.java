@@ -37,7 +37,6 @@ public class MultipleClients {
         Runnable co2HabitacionSensor = new Irun("CO2/HabitacionSensor", "1", "1", "10000000", "31");
         Thread threadCo2HabitSen = new Thread(co2HabitacionSensor);
         threadCo2HabitSen.start();
-
     }
 }
 

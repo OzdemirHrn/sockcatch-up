@@ -154,26 +154,26 @@ public class sendObjects implements Runnable {
                     float rttTime = rttTimeStart-rttTimeEnd;
                     float rtttime1 = rttTime %1000000000;
                     rttTime = (rttTime-rtttime1)/1000000000;
-                    System.out.println("rttStart "+rttTimeStart+" | rttend"+rttTimeEnd+" | aradaki fark"+ rttTime + " Timer: "+dfrtt.format(rttTime));
+                   // System.out.println("rttStart "+rttTimeStart+" | rttend"+rttTimeEnd+" | aradaki fark"+ rttTime + " Timer: "+dfrtt.format(rttTime));
 
 
 
                     //timerson
 
                     ////yeni malik
-                    ObjectInputStream ois = null;
-                    System.out.println("Sending request to Socket Server");
+                  /*  ObjectInputStream ois = null;
+                    System.out.println("Sending request to Socket Server");*/
                     //read the server response message
 
                     /*
                     Buraları benim http server projemden alalım!
                     Malikle akşam konuştuğumuz şey!
                      */
-
+/*
                     ois = new ObjectInputStream(clientSocket.getInputStream());
                     String message = (String) ois.readObject();
                     System.out.println("Message: " + message);
-
+*/
 
                     //timer
                     counter.increment();
@@ -193,10 +193,7 @@ public class sendObjects implements Runnable {
                 } catch (InterruptedException ex) {        // buraya eklenecek
                     Logger.getLogger(createObjects.class.getName()).log(Level.SEVERE, null, ex);
                     printArr();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
                 }
-
             }
         }
         try {
