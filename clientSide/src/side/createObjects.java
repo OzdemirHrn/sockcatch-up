@@ -10,6 +10,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
 public class createObjects implements Runnable {
 
     /*
@@ -19,14 +20,14 @@ public class createObjects implements Runnable {
     private float message;
     private int operation;
     private String topic;
-    private float size = 1;
-    private final float award = 3;
+    private double size = 0.5;
+    private final float award = 4;
 
     private static final Random random = new Random();
     private int createObjectSleep;
     private int capacityOfQueue;
     private int count;
-
+    static final Object o=new Object();
 
     public createObjects(LinkedBlockingQueue<Message> outgoingMessage, String topic, int createObjectSleep, int capacityOfQueue, int count) {
         this.outgoingMessage = outgoingMessage;
@@ -40,6 +41,15 @@ public class createObjects implements Runnable {
     public void run() {
         int dropped = 0;
         int index = 0;
+        /*
+        obje oluştursam.
+
+
+         */
+
+
+
+
         ArrayList<Float> temperatureSensor1 = null;
         try {
             temperatureSensor1 = readFromFile(count);
@@ -49,6 +59,14 @@ public class createObjects implements Runnable {
 
 
         while (true) {
+
+
+            /*
+
+            priority objesinden emthod çağırsam current value ile..
+             */
+
+
             try {
                 Thread.sleep(createObjectSleep);
             } catch (InterruptedException ex) {
@@ -72,6 +90,9 @@ public class createObjects implements Runnable {
                     index++;
                     //System.out.println(message);
                     outgoingMessage.add(new Message(topic, message, operation, size));
+
+
+
                 } else {
                     dropped++;
                     System.out.println("Drop sayısı:" + dropped);
@@ -80,8 +101,14 @@ public class createObjects implements Runnable {
             } catch (IndexOutOfBoundsException e) {
 
             }
-
+            synchronized(o) {
+                // Calling wait() will block this thread until another thread
+                // calls notify() on the object.
+                o.notify();
+            }
         }
+
+
 
     }
 

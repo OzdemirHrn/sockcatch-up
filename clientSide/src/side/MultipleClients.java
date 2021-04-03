@@ -29,14 +29,14 @@ public class MultipleClients {
         Runnable weatherTemperature = new Irun("Weather/Temperature", "1", "1", "10000000", "29");
         Thread threadWeatherTemp = new Thread(weatherTemperature);
         threadWeatherTemp.start();
-
+/*
         Runnable co2ComedorSensor = new Irun("CO2/ComedorSensor", "1", "1", "10000000", "30");
         Thread threadCo2Comedor = new Thread(co2ComedorSensor);
         threadCo2Comedor.start();
 
         Runnable co2HabitacionSensor = new Irun("CO2/HabitacionSensor", "1", "1", "10000000", "31");
         Thread threadCo2HabitSen = new Thread(co2HabitacionSensor);
-        threadCo2HabitSen.start();
+        threadCo2HabitSen.start();*/
     }
 }
 

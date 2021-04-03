@@ -9,6 +9,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class ClientSide {
 
     static float Qmin,Qmax;
+
     /*
     Gidecek mesajların beklediği Queue
     Thread Safe için Blocking Queue kullandım. Ama tekrar bakılabilir -----

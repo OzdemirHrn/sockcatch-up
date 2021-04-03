@@ -1,7 +1,6 @@
 package side;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.text.DecimalFormat;
@@ -10,7 +9,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-    /**
+
+/**
     Objectleri Server'a gönderen Thread ve onun Runnable classı
     */
 
@@ -24,6 +24,7 @@ public class sendObjects implements Runnable {
     private static final Random random = new Random();
     private LinkedBlockingQueue<Message> outgoingMessage;
     private Socket clientSocket;
+    static double estimatedRtt=0;
 
     public sendObjects(LinkedBlockingQueue<Message> outgoingMessage, Socket clientSocket, int sendObjectSleep) {
         this.outgoingMessage = outgoingMessage;
@@ -119,7 +120,26 @@ public class sendObjects implements Runnable {
 
     @Override
     public void run() {
+        // Burada first consistent mesaj olan, ilk mesajı almaya çalışıyoruö
+      /*  try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }*/
+        synchronized(createObjects.o) {
+            try {
+                // Calling wait() will block this thread until another thread
+                // calls notify() on the object.
+                createObjects.o.wait();
+            } catch (InterruptedException e) {
+                // Happens if someone interrupts your thread.
+            }
+        }
 
+        Priority priority = new Priority();
+
+        //bu time'ın burda başlaması bence doğru değil.
+        //Bu timer yanlış ölçüyor zaten
         final float start1 = System.nanoTime();
 
         while (true) {
@@ -129,53 +149,45 @@ public class sendObjects implements Runnable {
             ---EKLEMEDIM SADECE IF STATEMENT---
             */
 
-            if (!outgoingMessage.isEmpty()) {
+            if (!outgoingMessage.isEmpty()) { // bu line assert ile değiştirilebilir
 
                 ObjectOutputStream outToServer;
                 try {
                     int randomSending = getRandomVariable();
 
                     Thread.sleep(sendObjectSleep + randomSending);
-                    //outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
-                    //System.out.println(outgoingMessage.peek().getMessage()+"  "+outgoingMessage.peek().getTopic()+"  Queue size is "+outgoingMessage.size());
 
                     /*
-                    Thread sleep parametresine göre belli aralıklarla queuedaki
-                    head elementi servera yollamaya çalışıyor.
-                    */
-                    //poll-> return and remove yapiyor.
-
-                    //timer
-                    float rttTimeStart=System.nanoTime();
-                    outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
-                    outToServer.writeObject(outgoingMessage.poll());
-                    float rttTimeEnd=System.nanoTime();
-                    DecimalFormat dfrtt = new DecimalFormat("#.###");
-                    float rttTime = rttTimeStart-rttTimeEnd;
-                    float rtttime1 = rttTime %1000000000;
-                    rttTime = (rttTime-rtttime1)/1000000000;
-                   // System.out.println("rttStart "+rttTimeStart+" | rttend"+rttTimeEnd+" | aradaki fark"+ rttTime + " Timer: "+dfrtt.format(rttTime));
-
-
-
-                    //timerson
-
-                    ////yeni malik
-                  /*  ObjectInputStream ois = null;
-                    System.out.println("Sending request to Socket Server");*/
-                    //read the server response message
-
-                    /*
-                    Buraları benim http server projemden alalım!
-                    Malikle akşam konuştuğumuz şey!
+                    Burda priorty..
+                    First Consistent olayında son gönderdiğim mesajı burda anlarım
+                    Write object kısmına geçtiyse göndermiştir gibi.
                      */
-/*
-                    ois = new ObjectInputStream(clientSocket.getInputStream());
-                    String message = (String) ois.readObject();
-                    System.out.println("Message: " + message);
-*/
 
-                    //timer
+
+
+
+                    outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
+                    System.out.println("Topic is: "+outgoingMessage.peek().getTopic()+
+                            " Message is: "+outgoingMessage.peek().getMessage()+" Priority is: "+
+                    priority.priorityAssigner(outgoingMessage.peek().getMessage()));
+                    System.out.println();
+                    long rttTimeStart = System.nanoTime();
+                    outToServer.writeObject(outgoingMessage.poll());
+                    long rttTimeEnd = System.nanoTime();
+
+                    DecimalFormat dfrtt = new DecimalFormat("#.###");
+                    double rttTime = rttTimeEnd-rttTimeStart;
+                    System.out.println("rttStart "+rttTimeStart+" | rttend"+rttTimeEnd+" | aradaki fark"+ rttTime + " Timer: "+dfrtt.format(rttTime));
+
+                    double sampleRtt = rttTime / 1000000;   // convert nanosecond to milliseconds
+
+                    double sampleRttDeneme = (int)(sampleRtt*1000);
+                    double estimatedRtt = (int)(calculateEstimatedRtt(sampleRtt)*1000);
+
+                    System.out.println("sampleRtt: "+sampleRttDeneme + "estimatedRtt " +estimatedRtt );
+
+
+
                     counter.increment();
                     publishersTimer();
                     float son = System.nanoTime();
@@ -235,6 +247,21 @@ public class sendObjects implements Runnable {
         return randomSending;
 
     }
+
+    public double calculateEstimatedRtt(double sampleRtt){
+        if(estimatedRtt == 0)  // initializing, first input.
+        {
+            estimatedRtt = sampleRtt;
+            return estimatedRtt;
+        }
+        else
+        {
+            double a = 0.125;
+            estimatedRtt = (1-a) * estimatedRtt + a*sampleRtt;
+            return estimatedRtt;
+        }
+    }
+
 
     public void printArr() {
         int i;

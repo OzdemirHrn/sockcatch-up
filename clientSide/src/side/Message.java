@@ -11,9 +11,9 @@ class Message implements Serializable {
     private String topic;
     private float message;
     private int operation;
-    private float size;
+    private double size;
 
-    public float getSize() {
+    public double getSize() {
         return size;
     }
 
@@ -33,7 +33,7 @@ class Message implements Serializable {
         return operation;
     }
 
-    public Message(String topic, float message, int operation, float size) {
+    public Message(String topic, float message, int operation, double size) {
         this.topic = topic;
         this.message = message;
         this.operation = operation;
