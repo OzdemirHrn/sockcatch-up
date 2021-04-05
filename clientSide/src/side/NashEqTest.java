@@ -8,9 +8,9 @@ class NashEqTest {
 
     @Test
     void action() {
-        NashEq nashEq=new NashEq(0.5,0.1,0.5,4,0);
-        assertEquals(1.4,nashEq.action());
-        NashEq nashEq1=new NashEq(0.5,0.1,0.9,4,0);
-        assertEquals(3,nashEq1.action());
+        NashEq nashEq=new NashEq(0.5,0.1,0.4,4,0.3,0.4);
+        assertFalse(nashEq.action());
+        NashEq nashEq1=new NashEq(0.5,0.1,0.9,4,0,0);
+        assertTrue(nashEq1.action());
     }
 }
