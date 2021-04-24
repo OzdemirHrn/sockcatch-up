@@ -87,7 +87,7 @@ public class createObjects implements Runnable {
 
 
     private static ArrayList<Float> readFromFile(int count) throws IOException {
-        File file = new File("C:\\Users\\hrnoz\\IdeaProjects\\sockcatch-up\\clientSide\\src\\dataset1.txt");
+        File file = new File("C:\\Users\\muham\\IdeaProjects\\sockcatch-up\\clientSide\\src\\dataset1.txt");
         byte[] directlyToClient = new byte[(int) file.length()];
         FileInputStream fileInputStream = new FileInputStream(file);
         BufferedInputStream bufferedInputStream;

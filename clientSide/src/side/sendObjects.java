@@ -1,5 +1,7 @@
 package side;
 
+import org.junit.jupiter.api.parallel.Resources;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -25,7 +27,11 @@ public class sendObjects implements Runnable {
     private LinkedBlockingQueue<Message> outgoingMessage;
     private Socket clientSocket;
 
+    private final double award = 3;
+    Rtt rtt = new Rtt(0.05);
+
     public sendObjects(LinkedBlockingQueue<Message> outgoingMessage, Socket clientSocket, int sendObjectSleep) {
+
         this.outgoingMessage = outgoingMessage;
         this.clientSocket = clientSocket;
         this.sendObjectSleep = sendObjectSleep;
@@ -121,6 +127,10 @@ public class sendObjects implements Runnable {
     public void run() {
 
         final float start1 = System.nanoTime();
+        Priority priority = new Priority();
+        double rttOfMessage = 0;
+        double passengerPriority;
+
 
         while (true) {
            /*
@@ -145,25 +155,41 @@ public class sendObjects implements Runnable {
                     */
                     //poll-> return and remove yapiyor.
 
+                    Message passenger = outgoingMessage.peek();
+                    passengerPriority = priority.priorityAssigner(passenger.getMessage());
                     //timer
                     float rttTimeStart=System.nanoTime();
                     outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
                     outToServer.writeObject(outgoingMessage.poll());
-                    float rttTimeEnd=System.nanoTime();
-                    DecimalFormat dfrtt = new DecimalFormat("#.###");
-                    float rttTime = rttTimeStart-rttTimeEnd;
-                    float rtttime1 = rttTime %1000000000;
-                    rttTime = (rttTime-rtttime1)/1000000000;
-                   // System.out.println("rttStart "+rttTimeStart+" | rttend"+rttTimeEnd+" | aradaki fark"+ rttTime + " Timer: "+dfrtt.format(rttTime));
+
+
+                    if(NashEq.action( passenger.getSize(),
+                            rttOfMessage,
+                            passengerPriority,
+                            award,
+                            QueueOccupancyReceiver.queueOccupancy,
+                            QueueOccupancyReceiver.queueOccupancy) )
+                    {
+                        outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
+                        outToServer.writeObject(outgoingMessage.poll());
+
+                        System.out.println("ife giriyorum sıyırdım");
+                        // System.out.println("rttStart "+rttTimeStart+" | rttend"+rttTimeEnd+" | aradaki fark"+ rttTime + " Timer: "+dfrtt.format(rttTime));
 
 
 
-                    //timerson
+                        double sampleRtt = (System.nanoTime() - rttTimeStart) / 1000000;
 
-                    ////yeni malik
+                        rttOfMessage = rtt.calculateRTT(sampleRtt, rtt.calculateEstimatedRtt(sampleRtt));
+
+
+
+                        //timerson
+
+                        ////yeni malik
                   /*  ObjectInputStream ois = null;
                     System.out.println("Sending request to Socket Server");*/
-                    //read the server response message
+                        //read the server response message
 
                     /*
                     Buraları benim http server projemden alalım!
@@ -175,15 +201,18 @@ public class sendObjects implements Runnable {
                     System.out.println("Message: " + message);
 */
 
-                    //timer
-                    counter.increment();
-                    publishersTimer();
-                    float son = System.nanoTime();
-                    DecimalFormat df = new DecimalFormat("#.###");
-                    double time = son - start1;
-                    double time1 = time % 1000000;
-                    time = (time - time1) / 1000000;
-                    System.out.println("Counter: " + counter.getCounter() + " Timer: " + df.format(time));
+                        //timer
+                        counter.increment();
+                        publishersTimer();
+                        float son = System.nanoTime();
+                        DecimalFormat df = new DecimalFormat("#.###");
+                        double time = son - start1;
+                        double time1 = time % 1000000;
+                        time = (time - time1) / 1000000;
+                        System.out.println("Counter: " + counter.getCounter() + " Timer: " + df.format(time));
+                    }
+
+
 
                 } catch (IOException ex) {            // buraya yada+++++++
                     System.out.println("Server connection closed!");

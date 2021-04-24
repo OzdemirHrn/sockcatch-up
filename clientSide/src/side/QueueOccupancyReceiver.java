@@ -6,6 +6,7 @@ import java.net.Socket;
 
 public class QueueOccupancyReceiver implements Runnable {
 
+    public static double queueOccupancy;
     private Socket fromServer;
     InputStream inFromServer;
     private byte[] reply = new byte[1024];
@@ -44,8 +45,9 @@ public class QueueOccupancyReceiver implements Runnable {
 
     private void queueOccupancy(String str) {
         System.out.println("Queue Yoğunluğunu aldım --> " +str);
-        dataString = "";
+        queueOccupancy = Double.parseDouble(str);
 
+        dataString = "";
 
     }
 }

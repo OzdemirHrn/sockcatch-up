@@ -39,6 +39,5 @@ class Message implements Serializable {
         this.operation = operation;
         this.size = size;
 
-
     }
 }
