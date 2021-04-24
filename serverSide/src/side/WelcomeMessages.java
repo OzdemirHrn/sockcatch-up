@@ -14,7 +14,7 @@ public final class WelcomeMessages implements Runnable {
     Bu class gelen objectleri karşılayan executor thread havuzunun classı
     Objectler burada karşılandıktan sonra queueya alınıyor.
      */
-    private Socket client = null;
+    private Socket client;
     private LinkedBlockingQueue<Message> incomingMessage;
     /*
      şimdi Qmin ve Qmaxı her new connection established'ta göndermem lazım.

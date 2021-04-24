@@ -59,7 +59,7 @@ public class ServerSide {
 
 
             allClients.add(welcomeMessages);
-            service.submit(queueInfo);
+            //service.submit(queueInfo);
             service.submit(welcomeMessages);
 
         }

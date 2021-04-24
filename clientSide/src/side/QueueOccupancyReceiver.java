@@ -10,6 +10,7 @@ public class QueueOccupancyReceiver implements Runnable {
     InputStream inFromServer;
     private byte[] reply = new byte[1024];
     private String dataString = "";
+    static double queueOccupancy;
 
     public QueueOccupancyReceiver(Socket fromServer) throws IOException {
         this.fromServer = fromServer;
@@ -44,6 +45,8 @@ public class QueueOccupancyReceiver implements Runnable {
 
     private void queueOccupancy(String str) {
         System.out.println("Queue Yoğunluğunu aldım --> " +str);
+        queueOccupancy = Double.parseDouble(str);
+
         dataString = "";
 
 

@@ -2,23 +2,10 @@ package side;
 
 public class NashEq {
 
-    private double priority;
-    private double size;
-    private double RTT;
-    private double award;
-    private double queueOccupancy; // for now Q2=Q
-    private double queue2; // for now Q2=Q
 
+    private static double[][] nashArray = new double[2][4];
 
-    private double[][] nashArray = new double[2][4];
-
-    public NashEq(double size, double RTT, double priority, double award, double queueOccupancy, double queue2) {
-        this.size = size;
-        this.RTT = RTT;
-        this.priority = priority;
-        this.award = award;
-        this.queueOccupancy = queueOccupancy;
-        this.queue2 = queue2;
+    private NashEq(){
 
     }
 
@@ -31,10 +18,10 @@ public class NashEq {
 
 
      */
-    public boolean action() {
+    public static boolean action(double size, double RTT, double priority, double award, double queueOccupancy, double queue2) {
 
-        sendAccept();
-        sendDrop();
+        sendAccept(size, RTT, priority, award, queueOccupancy, queue2);
+        sendDrop(size, RTT, priority, award, queueOccupancy, queue2);
         notSend();
 
         if (nashArray[0][0] >= nashArray[0][2] && nashArray[0][0] > 0) {
@@ -50,7 +37,7 @@ public class NashEq {
 
     }
 
-    private void sendAccept() {
+    private static void sendAccept(double size, double RTT, double priority, double award, double queueOccupancy, double queue2) {
 
         nashArray[0][0] = (1 - queue2) * (priority * award - size - RTT) + queue2 * (-size - RTT);
         nashArray[0][1] = (1 - queueOccupancy) * (priority * award - size) + queueOccupancy * ((-award) * (1 - priority) - size);
@@ -59,7 +46,7 @@ public class NashEq {
 
     }
 
-    private void sendDrop() {
+    private static void sendDrop(double size, double RTT, double priority, double award, double queueOccupancy, double queue2) {
 
         nashArray[0][2] = -size - RTT;
         nashArray[0][3] = (1 - queueOccupancy) * (-priority * award + size) + queueOccupancy * ((1 - priority) * award + size);
@@ -68,7 +55,7 @@ public class NashEq {
 
     }
 
-    private void notSend() {
+    private static void notSend() {
 
         nashArray[1][0] = 0;
         nashArray[1][1] = 0;

@@ -11,8 +11,8 @@ import java.util.logging.Logger;
 
 
 /**
-    Objectleri Server'a gönderen Thread ve onun Runnable classı
-    */
+ * Objectleri Server'a gönderen Thread ve onun Runnable classı
+ */
 
 public class sendObjects implements Runnable {
 
@@ -24,7 +24,9 @@ public class sendObjects implements Runnable {
     private static final Random random = new Random();
     private LinkedBlockingQueue<Message> outgoingMessage;
     private Socket clientSocket;
-    static double estimatedRtt=0;
+
+    private final double award = 3;
+    Rtt rtt = new Rtt(0.05);
 
     public sendObjects(LinkedBlockingQueue<Message> outgoingMessage, Socket clientSocket, int sendObjectSleep) {
         this.outgoingMessage = outgoingMessage;
@@ -35,87 +37,17 @@ public class sendObjects implements Runnable {
     //TIMER
     static void publishersTimer() {
 
-        if (counter.getCounter() == 50) {
-            end = System.nanoTime() - start;
-            arr[0] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 100) {
-            end = System.nanoTime() - start;
-            arr[1] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 150) {
-            end = System.nanoTime() - start;
-            arr[2] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 200) {
-            end = System.nanoTime() - start;
-            arr[3] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 250) {
-            end = System.nanoTime() - start;
-            arr[4] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 300) {
-            end = System.nanoTime() - start;
-            arr[5] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 350) {
-            end = System.nanoTime() - start;
-            arr[6] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 400) {
-            end = System.nanoTime() - start;
-            arr[7] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 450) {
-            end = System.nanoTime() - start;
-            arr[8] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 500) {
-            end = System.nanoTime() - start;
-            arr[9] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 550) {
-            end = System.nanoTime() - start;
-            arr[10] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 600) {
-            end = System.nanoTime() - start;
-            arr[11] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 650) {
-            end = System.nanoTime() - start;
-            arr[12] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 700) {
-            end = System.nanoTime() - start;
-            arr[13] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 750) {
-            end = System.nanoTime() - start;
-            arr[14] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 800) {
-            end = System.nanoTime() - start;
-            arr[15] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 850) {
-            end = System.nanoTime() - start;
-            arr[16] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 900) {
-            end = System.nanoTime() - start;
-            arr[17] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 950) {
-            end = System.nanoTime() - start;
-            arr[18] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 1000) {
-            System.out.println(counter.getCounter());
-            arr[19] = (float) (end / 1e6);
-
+        int interval=50;
+        for(int i=0;i<20;i++){
+            if (counter.getCounter() == interval) {
+                end = System.nanoTime() - start;
+                arr[i] = (float) (end / 1e6);
+                break;
+            }
+            interval+=50;
         }
+
+
     }
 
     @Override
@@ -126,7 +58,7 @@ public class sendObjects implements Runnable {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }*/
-        synchronized(createObjects.o) {
+        synchronized (createObjects.o) {
             try {
                 // Calling wait() will block this thread until another thread
                 // calls notify() on the object.
@@ -137,10 +69,12 @@ public class sendObjects implements Runnable {
         }
 
         Priority priority = new Priority();
+        double rttOfMessage = 0;
 
         //bu time'ın burda başlaması bence doğru değil.
         //Bu timer yanlış ölçüyor zaten
         final float start1 = System.nanoTime();
+        double passengerPriority;
 
         while (true) {
            /*
@@ -163,39 +97,66 @@ public class sendObjects implements Runnable {
                     Write object kısmına geçtiyse göndermiştir gibi.
                      */
 
-
-
+                    Message passenger = outgoingMessage.peek();
+                    passengerPriority = priority.priorityAssigner(passenger.getMessage());
 
                     outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
-                    System.out.println("Topic is: "+outgoingMessage.peek().getTopic()+
-                            " Message is: "+outgoingMessage.peek().getMessage()+" Priority is: "+
-                    priority.priorityAssigner(outgoingMessage.peek().getMessage()));
+
+                    System.out.println("Topic is: " + passenger.getTopic() +
+                            " Message is: " + passenger.getMessage() + " Priority is: " +
+                            passengerPriority);
                     System.out.println();
-                    long rttTimeStart = System.nanoTime();
-                    outToServer.writeObject(outgoingMessage.poll());
-                    long rttTimeEnd = System.nanoTime();
-
-                    DecimalFormat dfrtt = new DecimalFormat("#.###");
-                    double rttTime = rttTimeEnd-rttTimeStart;
-                    System.out.println("rttStart "+rttTimeStart+" | rttend"+rttTimeEnd+" | aradaki fark"+ rttTime + " Timer: "+dfrtt.format(rttTime));
-
-                    double sampleRtt = rttTime / 1000000;   // convert nanosecond to milliseconds
-
-                    double sampleRttDeneme = (int)(sampleRtt*1000);
-                    double estimatedRtt = (int)(calculateEstimatedRtt(sampleRtt)*1000);
-
-                    System.out.println("sampleRtt: "+sampleRttDeneme + "estimatedRtt " +estimatedRtt );
 
 
+                    /*if(NashEq.action( passenger.getSize(),
+                                      rttOfMessage,
+                                      passengerPriority,
+                                      award,
+                                      QueueOccupancyReceiver.queueOccupancy,
+                                      QueueOccupancyReceiver.queueOccupancy) )
+                    {*/
 
-                    counter.increment();
-                    publishersTimer();
-                    float son = System.nanoTime();
-                    DecimalFormat df = new DecimalFormat("#.###");
-                    double time = son - start1;
-                    double time1 = time % 1000000;
-                    time = (time - time1) / 1000000;
-                    System.out.println("Counter: " + counter.getCounter() + " Timer: " + df.format(time));
+                        double rttTimeStart = System.nanoTime();
+
+                        outToServer.writeObject(outgoingMessage.poll());
+
+                        double sampleRtt = (System.nanoTime() - rttTimeStart) / 1000000;
+
+                        rttOfMessage = rtt.calculateRTT(sampleRtt, rtt.calculateEstimatedRtt(sampleRtt));
+
+                        //
+
+                        counter.increment();
+
+                        publishersTimer();
+
+
+                        float son = System.nanoTime();
+                        DecimalFormat df = new DecimalFormat("#.###");
+                        double time = son - start1;
+                        double time1 = time % 1000000;
+                        time = (time - time1) / 1000000;
+                        System.out.println("Counter: " + counter.getCounter() + " Timer: " + df.format(time));
+
+                    /*}else
+                    {
+                        System.out.println("Mesaj gönderilmedi!");
+                    }*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                 } catch (IOException ex) {            // buraya yada+++++++
                     System.out.println("Server connection closed!");
@@ -246,20 +207,6 @@ public class sendObjects implements Runnable {
 
         return randomSending;
 
-    }
-
-    public double calculateEstimatedRtt(double sampleRtt){
-        if(estimatedRtt == 0)  // initializing, first input.
-        {
-            estimatedRtt = sampleRtt;
-            return estimatedRtt;
-        }
-        else
-        {
-            double a = 0.125;
-            estimatedRtt = (1-a) * estimatedRtt + a*sampleRtt;
-            return estimatedRtt;
-        }
     }
 
 
