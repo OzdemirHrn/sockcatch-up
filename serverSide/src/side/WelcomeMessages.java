@@ -20,7 +20,7 @@ public final class WelcomeMessages implements Runnable {
      şimdi Qmin ve Qmaxı her new connection established'ta göndermem lazım.
      sadece 1 kere gönderilecek.
      */
-    int dropped = 0,Qmin=20,Qmax=80;
+    int dropped;
 
 
     public WelcomeMessages(Socket clientSocket, LinkedBlockingQueue<Message> incomingMessage) {

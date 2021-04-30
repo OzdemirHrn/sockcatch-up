@@ -1,9 +1,6 @@
 package side;
 
-import org.junit.jupiter.api.parallel.Resources;
-
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.text.DecimalFormat;
@@ -12,9 +9,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-    /**
-    Objectleri Server'a gönderen Thread ve onun Runnable classı
-    */
+/**
+ * Objectleri Server'a gönderen Thread ve onun Runnable classı
+ */
 
 public class sendObjects implements Runnable {
 
@@ -40,87 +37,17 @@ public class sendObjects implements Runnable {
     //TIMER
     static void publishersTimer() {
 
-        if (counter.getCounter() == 50) {
-            end = System.nanoTime() - start;
-            arr[0] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 100) {
-            end = System.nanoTime() - start;
-            arr[1] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 150) {
-            end = System.nanoTime() - start;
-            arr[2] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 200) {
-            end = System.nanoTime() - start;
-            arr[3] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 250) {
-            end = System.nanoTime() - start;
-            arr[4] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 300) {
-            end = System.nanoTime() - start;
-            arr[5] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 350) {
-            end = System.nanoTime() - start;
-            arr[6] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 400) {
-            end = System.nanoTime() - start;
-            arr[7] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 450) {
-            end = System.nanoTime() - start;
-            arr[8] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 500) {
-            end = System.nanoTime() - start;
-            arr[9] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 550) {
-            end = System.nanoTime() - start;
-            arr[10] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 600) {
-            end = System.nanoTime() - start;
-            arr[11] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 650) {
-            end = System.nanoTime() - start;
-            arr[12] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 700) {
-            end = System.nanoTime() - start;
-            arr[13] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 750) {
-            end = System.nanoTime() - start;
-            arr[14] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 800) {
-            end = System.nanoTime() - start;
-            arr[15] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 850) {
-            end = System.nanoTime() - start;
-            arr[16] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 900) {
-            end = System.nanoTime() - start;
-            arr[17] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 950) {
-            end = System.nanoTime() - start;
-            arr[18] = (float) (end / 1e6);
-
-        } else if (counter.getCounter() == 1000) {
-            System.out.println(counter.getCounter());
-            arr[19] = (float) (end / 1e6);
-
+        int interval=50;
+        for(int i=0;i<20;i++){
+            if (counter.getCounter() == interval) {
+                end = System.nanoTime() - start;
+                arr[i] = (float) (end / 1e6);
+                break;
+            }
+            interval+=50;
         }
+
+
     }
 
     @Override
@@ -158,24 +85,22 @@ public class sendObjects implements Runnable {
                     Message passenger = outgoingMessage.peek();
                     passengerPriority = priority.priorityAssigner(passenger.getMessage());
                     //timer
-                    float rttTimeStart=System.nanoTime();
+                    float rttTimeStart = System.nanoTime();
                     outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
                     outToServer.writeObject(outgoingMessage.poll());
 
 
-                    if(NashEq.action( passenger.getSize(),
+                    if (NashEq.action(passenger.getSize(),
                             rttOfMessage,
                             passengerPriority,
                             award,
                             QueueOccupancyReceiver.queueOccupancy,
-                            QueueOccupancyReceiver.queueOccupancy) )
-                    {
+                            QueueOccupancyReceiver.queueOccupancy)) {
                         outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
                         outToServer.writeObject(outgoingMessage.poll());
 
-                        System.out.println("ife giriyorum sıyırdım");
+                        //System.out.println("ife giriyorum sıyırdım");
                         // System.out.println("rttStart "+rttTimeStart+" | rttend"+rttTimeEnd+" | aradaki fark"+ rttTime + " Timer: "+dfrtt.format(rttTime));
-
 
 
                         double sampleRtt = (System.nanoTime() - rttTimeStart) / 1000000;
@@ -183,27 +108,10 @@ public class sendObjects implements Runnable {
                         rttOfMessage = rtt.calculateRTT(sampleRtt, rtt.calculateEstimatedRtt(sampleRtt));
 
 
-
-                        //timerson
-
-                        ////yeni malik
-                  /*  ObjectInputStream ois = null;
-                    System.out.println("Sending request to Socket Server");*/
-                        //read the server response message
-
-                    /*
-                    Buraları benim http server projemden alalım!
-                    Malikle akşam konuştuğumuz şey!
-                     */
-/*
-                    ois = new ObjectInputStream(clientSocket.getInputStream());
-                    String message = (String) ois.readObject();
-                    System.out.println("Message: " + message);
-*/
-
                         //timer
                         counter.increment();
                         publishersTimer();
+
                         float son = System.nanoTime();
                         DecimalFormat df = new DecimalFormat("#.###");
                         double time = son - start1;
@@ -212,6 +120,11 @@ public class sendObjects implements Runnable {
                         System.out.println("Counter: " + counter.getCounter() + " Timer: " + df.format(time));
                     }
 
+                    /*
+                     * Nash Eq. Gönderme kararı alınca buraya düşecek.
+                     */
+
+                    else System.out.println("Gönderme!!");
 
 
                 } catch (IOException ex) {            // buraya yada+++++++

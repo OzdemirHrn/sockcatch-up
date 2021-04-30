@@ -1,0 +1,7 @@
+2
+topic createObjectSleep sendObjectSleep capacityOfQueue datasetRow
+Temperature/ComedorSensor 1 1 10000 27
+Temperature/HabitacionSensor 1 1 10000 28
+Weather/Temperature 1 1 10000 29
+CO2/ComedorSensor 1 1 10000 30
+CO2/HabitacionSensor 1 1 10000 31

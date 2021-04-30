@@ -1,66 +1,37 @@
 package side;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MultipleClients {
 
 
-    public static void main(String... args) {
-		/*
-		args[1]="500";
-		args[2]="1000";
-		args[3]="100";
-         /*
-         Burada bazÄ± sÄ±kÄ±ntÄ±lar var.
-         EÅŸ zamanlÄ± farklÄ± parametrelerle Ã§alÄ±ÅŸtÄ±ramÄ±yorum.
-         Mesajlar birbirine giriyor ve random deÄŸer hep aynÄ± oluyor.
-         */
+    public static void main(String... args) throws IOException {
 
 
-        Runnable temperatureComedorSensor = new Irun("Temperature/ComedorSensor", "1", "1", "10000000", "27");
-        Thread threadTempComSen = new Thread(temperatureComedorSensor);
-        threadTempComSen.start();
+        for(int i=2;i<RunConfig.returnNumberOfSensors()+2;i++){
+            new Thread(new RunSensorsSeparately(RunConfig.readConfig(i))).start();
+        }
 
-        Runnable temperatureHabitacionSensor = new Irun("Temperature/HabitacionSensor", "1", "1", "10000000", "28");
-        Thread threadTempHabit = new Thread(temperatureHabitacionSensor);
-        threadTempHabit.start();
-
-        Runnable weatherTemperature = new Irun("Weather/Temperature", "1", "1", "10000000", "29");
-        Thread threadWeatherTemp = new Thread(weatherTemperature);
-        threadWeatherTemp.start();
-
-        Runnable co2ComedorSensor = new Irun("CO2/ComedorSensor", "1", "1", "10000000", "30");
-        Thread threadCo2Comedor = new Thread(co2ComedorSensor);
-        threadCo2Comedor.start();
-
-        Runnable co2HabitacionSensor = new Irun("CO2/HabitacionSensor", "1", "1", "10000000", "31");
-        Thread threadCo2HabitSen = new Thread(co2HabitacionSensor);
-        threadCo2HabitSen.start();
     }
 }
 
-class Irun implements Runnable {
-    private String topic;
-    String createObjectSleep;
-    String sendObjectSleep;
-    String capacityOfQueue;
-    String datasetRow;
+class RunSensorsSeparately implements Runnable {
 
-    public Irun(String topic, String createObjectSleep, String sendObjectSleep, String capacityOfQueue, String datasetRow) {
-        this.topic = topic;
-        this.createObjectSleep = createObjectSleep;
-        this.sendObjectSleep = sendObjectSleep;
-        this.capacityOfQueue = capacityOfQueue;
-        this.datasetRow = datasetRow;
+    private final List<String> sensorConfig;
+
+    public RunSensorsSeparately(List<String> sensorConfig) {
+        this.sensorConfig = sensorConfig;
     }
 
     @Override
     public void run() {
         try {
-            ClientSide.main(topic, createObjectSleep, sendObjectSleep, capacityOfQueue, datasetRow);
+            ClientSide.main(sensorConfig);
         } catch (Exception ex) {
-            Logger.getLogger(Irun.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RunSensorsSeparately.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

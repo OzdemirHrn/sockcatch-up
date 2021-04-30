@@ -1,12 +1,8 @@
 package side;
 
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
-import java.text.DecimalFormat;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class QueueInfo implements Runnable {
@@ -46,17 +42,17 @@ public class QueueInfo implements Runnable {
                 Thread.sleep(500);
                 sendToClient();
             } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
+                try {
+                    sensor.close();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
             }
         }
 
     }
 
-    private boolean calculateDifference(int current, int prev) {
-        double percentageDiff;
-        percentageDiff = ((double) Math.abs(current - prev) / (double)((current + prev) / 2)) * 100;
-        return Double.parseDouble(new DecimalFormat("##.###").format(percentageDiff).replace(',', '.'))>3;
-    }
+
 
     private void sendToClient() throws IOException {
         //Sensore göndermesi lazım queue bilgisi
@@ -66,8 +62,7 @@ public class QueueInfo implements Runnable {
         String message=""+incomingMessage.size();
         System.out.println(message);
         toSensor=message.getBytes();
-        System.out.println("Kaç byte yolluyorum  "+toSensor.length);
+
         outToSensor.write(toSensor);
-        //sensor.close();
     }
 }

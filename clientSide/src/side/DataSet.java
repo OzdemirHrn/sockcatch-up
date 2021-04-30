@@ -1,16 +1,21 @@
 package side;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class DataSet {
 
-    public static void main(String[] args) throws IOException {
-        readFromFile();
+    private final static String path="C:\\Users\\hrnoz\\Desktop\\sockcatch-up\\clientSide\\src\\dataset.txt";
+
+    private DataSet() {
+
     }
 
-    public static void readFromFile() throws IOException {
-        File file = new File("C:\\Users\\hrnoz\\IdeaProjects\\sockcatch-up\\clientSide\\src\\dataset1.txt");
+    public static ArrayList<Float> readFromFile(int count) throws IOException {
+        File file = new File(path);
         byte[] directlyToClient = new byte[(int) file.length()];
         FileInputStream fileInputStream = new FileInputStream(file);
         BufferedInputStream bufferedInputStream;
@@ -19,26 +24,17 @@ public class DataSet {
         String str = new String(directlyToClient);
         String[] strSplit;
         strSplit = str.split(" ");
-        ArrayList<Float> temperatureSensor1 = new ArrayList<>();
-        ArrayList<Float> co2Sensor1 = new ArrayList<>();
-        String[] timeLine;
-        int count = 27;
+        ArrayList<Float> sensorValuesFromDataSet = new ArrayList<>();
+
+
         while (count < strSplit.length) {
-            temperatureSensor1.add(Float.parseFloat(strSplit[count]));
-            co2Sensor1.add(Float.parseFloat(strSplit[count+3]));
+            sensorValuesFromDataSet.add(Float.parseFloat(strSplit[count]));
             count += 23;
         }
 
-        for (Float f : temperatureSensor1) {
-            System.out.println(f);
-
-        }
-
-        for (Float f : co2Sensor1) {
-            System.out.println(f);
-
-        }
+        return sensorValuesFromDataSet;
 
     }
+
 
 }

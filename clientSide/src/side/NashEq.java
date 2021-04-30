@@ -18,6 +18,13 @@ public class NashEq {
      */
     public static boolean action(double size, double RTT, double priority, double award, double queueOccupancy, double queue2) {
 
+        System.out.println(
+               "Size= "+size+
+               "\nRTT= "+RTT+
+               "\nPriority= "+priority+
+               "\nAward= "+award+
+               "\nQueue= "+queueOccupancy
+        );
         sendAccept(size, RTT, priority, award, queueOccupancy, queue2);
         sendDrop(size, RTT, priority, award, queueOccupancy, queue2);
         notSend();
@@ -39,7 +46,7 @@ public class NashEq {
 
         nashArray[0][0] = (1 - queue2) * (priority * award - size - RTT) + queue2 * (-size - RTT);
         nashArray[0][1] = (1 - queueOccupancy) * (priority * award - size) + queueOccupancy * ((-award) * (1 - priority) - size);
-        System.out.print("( " + nashArray[0][0] + "," + nashArray[0][1] + " )   ");
+        //System.out.print("( " + nashArray[0][0] + "," + nashArray[0][1] + " )   ");
 
 
     }
@@ -48,7 +55,7 @@ public class NashEq {
 
         nashArray[0][2] = -size - RTT;
         nashArray[0][3] = (1 - queueOccupancy) * (-priority * award + size) + queueOccupancy * ((1 - priority) * award + size);
-        System.out.println("( " + nashArray[0][2] + "," + nashArray[0][3] + " )   ");
+        //System.out.print("( " + nashArray[0][2] + "," + nashArray[0][3] + " )   ");
 
 
     }
@@ -57,7 +64,7 @@ public class NashEq {
 
         nashArray[1][0] = 0;
         nashArray[1][1] = 0;
-        System.out.println("( " + nashArray[1][0] + "," + nashArray[1][1] + " )   ");
+       // System.out.println("( " + nashArray[1][0] + "," + nashArray[1][1] + " )   ");
         //0
 
     }

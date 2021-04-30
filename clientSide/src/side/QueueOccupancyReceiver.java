@@ -11,6 +11,7 @@ public class QueueOccupancyReceiver implements Runnable {
     InputStream inFromServer;
     private byte[] reply = new byte[1024];
     private String dataString = "";
+    private final int Qmin = 20, Qmax = 80;
 
     public QueueOccupancyReceiver(Socket fromServer) throws IOException {
         this.fromServer = fromServer;
@@ -44,9 +45,11 @@ public class QueueOccupancyReceiver implements Runnable {
     }
 
     private void queueOccupancy(String str) {
-        System.out.println("Queue Yoğunluğunu aldım --> " +str);
-        queueOccupancy = Double.parseDouble(str);
-
+        double rawQueueValue = Double.parseDouble(str);
+        if (rawQueueValue < Qmin) queueOccupancy = 0;
+        else if (rawQueueValue > Qmax) queueOccupancy = 1;
+        else queueOccupancy = rawQueueValue / 100;
+        System.out.println("Queue Yoğunluğunu aldım --> " + queueOccupancy);
         dataString = "";
 
     }

@@ -53,7 +53,6 @@ public class ServerSide {
             toServerQminQmax.writeObject(Qmin+" "+Qmax);
 
 
-
             WelcomeMessages welcomeMessages = new WelcomeMessages(connectionSocket, comingMessages);
             QueueInfo queueInfo = new QueueInfo(connectionSocket,comingMessages);
 
