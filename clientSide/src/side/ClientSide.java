@@ -9,7 +9,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class ClientSide {
 
-    static float Qmin,Qmax;
+    static int Qmin,Qmax;
     /*
     Gidecek mesajların beklediği Queue
     Thread Safe için Blocking Queue kullandım. Ama tekrar bakılabilir -----
@@ -39,8 +39,8 @@ public class ClientSide {
 
         ois = new ObjectInputStream(clientSocket.getInputStream());
         String message = (String) ois.readObject();
-        Qmin=Float.parseFloat(message.substring(0,3));
-        Qmax=Float.parseFloat(message.substring(5,8));
+        Qmin=Integer.parseInt(message.substring(0,3));
+        Qmax=Integer.parseInt(message.substring(5,8));
         System.out.println(Qmin+"  "+Qmax);
 
         Runnable receivingQueueOcc = new QueueOccupancyReceiver(clientSocket);

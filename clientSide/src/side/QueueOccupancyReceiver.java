@@ -11,7 +11,7 @@ public class QueueOccupancyReceiver implements Runnable {
     InputStream inFromServer;
     private byte[] reply = new byte[1024];
     private String dataString = "";
-    private final int Qmin = 20, Qmax = 80;
+    private final int Qmin = ClientSide.Qmin, Qmax=ClientSide.Qmax = 80;
 
     public QueueOccupancyReceiver(Socket fromServer) throws IOException {
         this.fromServer = fromServer;
