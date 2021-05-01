@@ -39,8 +39,8 @@ public class ClientSide {
 
         ois = new ObjectInputStream(clientSocket.getInputStream());
         String message = (String) ois.readObject();
-        Qmin=Integer.parseInt(message.substring(0,3));
-        Qmax=Integer.parseInt(message.substring(5,8));
+        Qmin= Integer.parseInt(message.substring(0,2));
+        Qmax=Integer.parseInt(message.substring(5,7));
         System.out.println(Qmin+"  "+Qmax);
 
         Runnable receivingQueueOcc = new QueueOccupancyReceiver(clientSocket);
