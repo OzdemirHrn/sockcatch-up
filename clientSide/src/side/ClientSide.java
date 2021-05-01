@@ -1,150 +1,69 @@
 package side;
 
-import java.io.*; 
-import java.net.*; 
-import java.util.Queue;
-import java.util.Random;
+import java.io.ObjectInputStream;
+import java.net.Socket;
+import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
- *
  * @author harunOzdemir
  */
+public class ClientSide {
 
-class ClientSide { 
-    
+    static int Qmin,Qmax;
     /*
     Gidecek mesajların beklediği Queue
     Thread Safe için Blocking Queue kullandım. Ama tekrar bakılabilir -----
     */
-    private static LinkedBlockingQueue<Message> goingMessages = new LinkedBlockingQueue<Message>();
+    public static void main(List<String> config) throws Exception {
 
-    
-    public static void main(String... topic) throws Exception 
-    { 
+        int createObjectSleep = Integer.parseInt(config.get(1));
+        int sendObjectSleep = Integer.parseInt(config.get(2));
+        int capacityOfQueue = Integer.parseInt(config.get(3));
+        int datasetRow = Integer.parseInt(config.get(4));
+
+
+        LinkedBlockingQueue<Message> goingMessages = new LinkedBlockingQueue<>(capacityOfQueue);
+
         /*
         Client side main methodundan  argument alıyor.
         Bu argument topic olarak görev yapıyor.
         Bu client sadece bu topice message yolluyor
         */
-        
-        Socket clientSocket = new Socket("127.0.0.1", 6789);
-        
+        Socket clientSocket = new Socket("192.168.1.136", 6789);
         /*
+        Qmin ve Qmax'ı buradan alsam direkt???
+
+         */
+
+        ObjectInputStream ois;
+
+        ois = new ObjectInputStream(clientSocket.getInputStream());
+        String message = (String) ois.readObject();
+        Qmin=Integer.parseInt(message.substring(0,3));
+        Qmax=Integer.parseInt(message.substring(5,8));
+        System.out.println(Qmin+"  "+Qmax);
+
+        Runnable receivingQueueOcc = new QueueOccupancyReceiver(clientSocket);
+        Thread threadReceivingQueueOcc = new Thread(receivingQueueOcc);
+        threadReceivingQueueOcc.start();
+
+       /*
         Message sınıfından topic ve random value argumentleriyle
         objectler oluşturan Thread.
-        */      
-        Runnable creatingObject=new createObjects(goingMessages,topic[0]);
+        */
+        Runnable creatingObject = new createObjects(goingMessages, config.get(0), createObjectSleep, capacityOfQueue,datasetRow);
         Thread threadCreatingObject = new Thread(creatingObject);
         threadCreatingObject.start();
-         
+
         /*
         Bu objectleri clientSocket'e gönderen Thread.
         */
-        Runnable sendingObjects=new sendObjects(goingMessages,clientSocket);
+        Runnable sendingObjects = new sendObjects(goingMessages, clientSocket, sendObjectSleep);
         Thread threadSendingObjects = new Thread(sendingObjects);
         threadSendingObjects.start();
-    } 
 
-} 
-
-class sendObjects implements Runnable{
-    /*
-    Objectleri Server'a gönderen Thread ve onun Runnable classı
-    */
-    private LinkedBlockingQueue<Message> outgoingMessage;
-    private  Socket clientSocket;
-    
-    public sendObjects(LinkedBlockingQueue<Message> outgoingMessage, Socket clientSocket){
-        this.outgoingMessage=outgoingMessage;
-        this.clientSocket=clientSocket;
-    }
-
-    @Override
-    public void run() {
-    
-        while(true){
-           /*
-            Buraya wait Thread methodu ekleyecektim. Loop sürekli dönmesin
-            Queue boş olduğunda beklesin diye. 
-            ---EKLEMEDIM SADECE IF STATEMENT---
-            */
-            if(!outgoingMessage.isEmpty()){ 
-                
-                ObjectOutputStream outToServer;
-                try {
-                    Thread.sleep(1000);
-                    outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
-                    System.out.println(outgoingMessage.peek().getMessage()+"  "+outgoingMessage.peek().getTopic()+"  Queue size is "+outgoingMessage.size());
-                    /*
-                    Thread sleep parametresine göre belli aralıklarla queuedaki 
-                    head elementi servera yollamaya çalışıyor.
-                    */
-                    outToServer.writeObject(outgoingMessage.poll());
-                    /*
-                    poll-> return and remove yapıyor.
-                    */
-                    
-                } catch (IOException ex) {    
-                    Logger.getLogger(sendObjects.class.getName()).log(Level.SEVERE, null, ex);
-                    break;
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(createObjects.class.getName()).log(Level.SEVERE, null, ex);
-            }
-                
-            }
-        }
-        try {
-          
-            clientSocket.close();
-        } catch (IOException ex) {
-            Logger.getLogger(sendObjects.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
 }
 
 
-class createObjects implements Runnable{
-    /*
-    Objectleri üreten Thread'in Runnable classı
-    */
-    private LinkedBlockingQueue<Message> outgoingMessage;
-    private int message;
-    private String topic;
-    private static final Random random = new Random();   
-    
-    public createObjects(LinkedBlockingQueue<Message> outgoingMessage,String topic){
-        this.outgoingMessage=outgoingMessage;
-        this.topic=topic;
-    }
-
-    @Override
-    public void run() {
-    
-        while(true){
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(createObjects.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            /*
-            Belli aralıklarla yeni objectler oluşturup bunları Queue'ya atıyorum.
-            MQTT'deki publisher client görevi.
-            */
-            message = createRandomNumberBetween(1,100);
-            outgoingMessage.add(new Message(topic,message));
-        }
-        
-    }
-    
-    private int createRandomNumberBetween(int min, int max) {
-        /*
-        1-100 arası Integer değer üreten fonksiyon.
-        */
-        return random.nextInt(max - min + 1) + min;
-    }
-
-}

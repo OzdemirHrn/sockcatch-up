@@ -1,2 +1,2 @@
-side.Irun
+side.RunSensorsSeparately
 side.MultipleClients

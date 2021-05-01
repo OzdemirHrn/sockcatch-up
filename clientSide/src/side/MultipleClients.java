@@ -1,48 +1,39 @@
 package side;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author harunOzdemir
- */
-
 public class MultipleClients {
-   
-     public static void main(String... args){
-         /*
-         Burada bazı sıkıntılar var.
-         Eş zamanlı farklı parametrelerle çalıştıramıyorum.
-         Mesajlar birbirine giriyor ve random değer hep aynı oluyor.
-         */
-         Runnable bathroomB=new Irun("home/brightness/bathroom4");
-         Thread threadBathroomB=new Thread(bathroomB);
-         threadBathroomB.start();
-         
-         /*Runnable bathroomT=new Irun("home/temperature/bathroom");
-         Thread threadBathroomT=new Thread(bathroomT);
-         threadBathroomT.start();*/
 
-    
+
+    public static void main(String... args) throws IOException {
+
+
+        for(int i=2;i<RunConfig.returnNumberOfSensors()+2;i++){
+            new Thread(new RunSensorsSeparately(RunConfig.readConfig(i))).start();
+        }
+
+    }
 }
-     }
 
-class Irun implements Runnable{
-    private String topic;
-    public Irun(String topic){
-        this.topic=topic;
+class RunSensorsSeparately implements Runnable {
+
+    private final List<String> sensorConfig;
+
+    public RunSensorsSeparately(List<String> sensorConfig) {
+        this.sensorConfig = sensorConfig;
     }
 
     @Override
     public void run() {
         try {
-            ClientSide.main(topic);
+            ClientSide.main(sensorConfig);
         } catch (Exception ex) {
-            Logger.getLogger(Irun.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RunSensorsSeparately.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    
-}
 
+
+}
