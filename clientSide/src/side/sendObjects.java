@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 /**
  * Objectleri Server'a gönderen Thread ve onun Runnable classı
  */
-
+// merhaba 2
 public class sendObjects implements Runnable {
 
     final static Counter counter = new Counter();
