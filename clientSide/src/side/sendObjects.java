@@ -5,9 +5,13 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.text.DecimalFormat;
 import java.util.Random;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.DelayQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static side.NashEq.takeWaitingTime;
 
 /**
  * Objectleri Server'a gönderen Thread ve onun Runnable classı
@@ -21,6 +25,7 @@ public class sendObjects implements Runnable {
     private Socket clientSocket;
     RandomVariable randomVariable = new RandomVariable();
     ClientAnalysis clientAnalysis = new ClientAnalysis();
+    BlockingQueue<DelayObject> DQ = new DelayQueue<DelayObject>();
 
     private final double award = 3;
     Rtt rtt = new Rtt(0.05);
@@ -42,6 +47,14 @@ public class sendObjects implements Runnable {
 
 
         while (true) {
+            //alttaki kod bekletilen nesnelerden süresi bitmişleri tekrar queue ya sokuyor
+            try {
+                outgoingMessage.add(DQ.poll().message);
+                System.out.println("Tekrar gönderiliyor");
+            } catch (Exception e) {
+
+            }
+
            /*
             Buraya wait Thread methodu ekleyecektim. Loop sürekli dönmesin
             Queue boş olduğunda beklesin diye.
@@ -73,7 +86,8 @@ public class sendObjects implements Runnable {
                             passengerPriority,
                             award,
                             QueueOccupancyReceiver.queueOccupancy,
-                            QueueOccupancyReceiver.queueOccupancy)) {
+                            QueueOccupancyReceiver.queueOccupancy
+                            )) {
                         outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
                         outToServer.writeObject(outgoingMessage.poll());
 
@@ -100,7 +114,16 @@ public class sendObjects implements Runnable {
                      * Nash Eq. Gönderme kararı alınca buraya düşecek.
                      */
 
-                    else System.out.println("Gönderme!!");
+                    else {
+                        long delayTime= takeWaitingTime(passenger.getSize(),
+                                rttOfMessage,
+                                passengerPriority,
+                                award,
+                                QueueOccupancyReceiver.queueOccupancy,
+                                QueueOccupancyReceiver.queueOccupancy);
+                        DelayObject delayObject = new DelayObject(outgoingMessage.peek(),delayTime);
+                        DQ.add(delayObject) ;
+                    }
 
                 } catch (IOException ex) {            // buraya yada+++++++
                     System.out.println("Server connection closed!");
