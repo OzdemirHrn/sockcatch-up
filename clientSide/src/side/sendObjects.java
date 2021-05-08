@@ -4,14 +4,13 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.text.DecimalFormat;
-import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.DelayQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static side.NashEq.takeWaitingTime;
+import static side.DelayObject.takeWaitingTime;
 
 /**
  * Objectleri Server'a gönderen Thread ve onun Runnable classı
@@ -21,7 +20,7 @@ public class sendObjects implements Runnable {
 
     final static Counter counter = new Counter();
     private int sendObjectSleep;
-    private LinkedBlockingQueue<Message> outgoingMessage;
+    private LinkedBlockingDeque<Message> outgoingMessage;
     private Socket clientSocket;
     RandomVariable randomVariable = new RandomVariable();
     ClientAnalysis clientAnalysis = new ClientAnalysis();
@@ -30,7 +29,7 @@ public class sendObjects implements Runnable {
     private final double award = 3;
     Rtt rtt = new Rtt(0.05);
 
-    public sendObjects(LinkedBlockingQueue<Message> outgoingMessage, Socket clientSocket, int sendObjectSleep) {
+    public sendObjects(LinkedBlockingDeque<Message> outgoingMessage, Socket clientSocket, int sendObjectSleep) {
 
         this.outgoingMessage = outgoingMessage;
         this.clientSocket = clientSocket;
@@ -48,6 +47,7 @@ public class sendObjects implements Runnable {
 
         while (true) {
             //alttaki kod bekletilen nesnelerden süresi bitmişleri tekrar queue ya sokuyor
+
             try {
                 Message delayedMessage = DQ.peek().message;
                 if (delayedMessage.getPriority()<=0.9){
@@ -55,9 +55,13 @@ public class sendObjects implements Runnable {
                 }else{
                     delayedMessage.setPriority(1);
                 }
-                outgoingMessage.add(DQ.poll().message);
+                delayedMessage.setDelayedTrue();
+                delayedMessage.setCounter(delayedMessage.getCounter()+1);
+                if(delayedMessage.getCounter()==4){
+                    DQ.poll();
+                }
+                outgoingMessage.addFirst(DQ.poll().message);
                 System.out.println("Tekrar gönderiliyor");
-
             } catch (Exception e) {
             }
 
@@ -81,7 +85,7 @@ public class sendObjects implements Runnable {
 
                     Message passenger = outgoingMessage.peek();
                     if(passenger.isDelayed()){
-
+                        System.out.println("içi boş ife geldi");
                     }else{
                         passengerPriority = priority.priorityAssigner(passenger.getMessage());
                     }
@@ -127,7 +131,8 @@ public class sendObjects implements Runnable {
 
                     else {
                         passenger.setPriority(passengerPriority);
-                        long delayTime= takeWaitingTime(passenger.getSize(),
+                        passenger.setDelayedTrue();
+                        double delayTime= takeWaitingTime(passenger.getSize(),
                                 rttOfMessage,
                                 passengerPriority,
                                 award,

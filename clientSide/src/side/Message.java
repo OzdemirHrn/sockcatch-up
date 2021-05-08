@@ -13,7 +13,8 @@ class Message implements Serializable {
     private int operation;
     private float size;
     private boolean delayed = false;
-    private double priority ;
+    private double priority;
+    private int counter=0;
 
     public float getSize() {
         return size;
@@ -48,7 +49,7 @@ class Message implements Serializable {
     }
 
     public void setDelayedTrue() {
-        this.delayed = delayed;
+        this.delayed = true;
     }
 
     public double getPriority() {
@@ -57,5 +58,13 @@ class Message implements Serializable {
 
     public void setPriority(double priority) {
         this.priority = priority;
+    }
+
+    public int getCounter() {
+        return counter;
+    }
+
+    public void setCounter(int counter) {
+        this.counter = counter;
     }
 }

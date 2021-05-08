@@ -3,6 +3,7 @@ package side;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 /**
  * @author harunOzdemir
@@ -22,7 +23,7 @@ public class ClientSide {
         int datasetRow = Integer.parseInt(config.get(4));
 
 
-        LinkedBlockingQueue<Message> goingMessages = new LinkedBlockingQueue<>(capacityOfQueue);
+        LinkedBlockingDeque<Message> goingMessages = new LinkedBlockingDeque<>(capacityOfQueue);
 
         /*
         Client side main methodundan  argument alıyor.

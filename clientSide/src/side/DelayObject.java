@@ -3,18 +3,18 @@ package side;
 
 
 import java.util.concurrent.*;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.DelayQueue;
 class DelayObject implements Delayed {
 
+    private static double[][] waitingTimeArray = new double[1][2];
     Message message;
     private long time;
 
-    public DelayObject(Message message, long delayTime)
+    public DelayObject(Message message, double delayTime)
     {
         this.message = message;
         this.time = System.currentTimeMillis()
-                + delayTime;
+                + (long) delayTime;
     }
 
 
@@ -42,5 +42,22 @@ class DelayObject implements Delayed {
 
     public void delayQueue(DelayQueue DQ,Message delayObject, long delayTime){
         DQ.add(new DelayObject(delayObject,delayTime));
+    }
+
+    public static double takeWaitingTime(double size, double RTT, double priority, double award, double queueOccupancy, double queue2){
+        double waitingTime;
+        double x = (1 - queue2) * (priority * award - size - RTT) + queue2 * (-size - RTT);
+        double y = (1 - queueOccupancy) * (priority * award - size) + queueOccupancy * ((-award) * (1 - priority) - size);
+
+        if(x<0 && y<0){
+            if (Math.abs(x)>Math.abs(y)){
+                waitingTime =  x*award*1000;
+            }else{
+                waitingTime = y*award*1000;
+            }
+        }else{
+            waitingTime = Math.min(x,y)*award*1000;
+        }
+        return Math.abs(waitingTime);
     }
 }

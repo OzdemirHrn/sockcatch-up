@@ -3,6 +3,7 @@ package side;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -13,7 +14,7 @@ public class createObjects implements Runnable {
     /*
      Objectleri üreten Thread'in Runnable classı
      */
-    private LinkedBlockingQueue<Message> outgoingMessage;
+    private LinkedBlockingDeque<Message> outgoingMessage;
     private float message;
     private int operation;
     private String topic;
@@ -26,7 +27,7 @@ public class createObjects implements Runnable {
     private int count;
     static final Object o=new Object();
 
-    public createObjects(LinkedBlockingQueue<Message> outgoingMessage, String topic, int createObjectSleep, int capacityOfQueue, int count) {
+    public createObjects(LinkedBlockingDeque<Message> outgoingMessage, String topic, int createObjectSleep, int capacityOfQueue, int count) {
         this.outgoingMessage = outgoingMessage;
         this.topic = topic;
         this.createObjectSleep = createObjectSleep;

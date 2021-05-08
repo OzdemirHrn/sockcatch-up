@@ -69,9 +69,4 @@ public class NashEq {
 
     }
 
-    public static long takeWaitingTime(double size, double RTT, double priority, double award, double queueOccupancy, double queue2){
-
-        return (long) ((1 - queue2) * (priority * award - size - RTT) + queue2 * (-size - RTT)*award)*1000;
-    }
-
 }
