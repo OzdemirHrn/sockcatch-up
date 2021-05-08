@@ -49,7 +49,7 @@ public class QueueOccupancyReceiver implements Runnable {
         if (rawQueueValue < Qmin) queueOccupancy = 0;
         else if (rawQueueValue > Qmax) queueOccupancy = 1;
         else queueOccupancy = rawQueueValue / 100;
-        System.out.println("Queue Yoğunluğunu aldım --> " + queueOccupancy);
+        //System.out.println("Queue Yoğunluğunu aldım --> " + queueOccupancy);
         dataString = "";
 
     }

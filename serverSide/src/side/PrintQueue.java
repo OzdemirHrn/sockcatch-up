@@ -20,7 +20,7 @@ public class PrintQueue implements Runnable {
     // test variables
     static int incrementOfCounter = 50;                 // tutulma aralığını buraya yaz, ne sıklıkla tutulacak
     static int totalCounter = incrementOfCounter;
-    static int limitOfCounter = 1000;               // nereye kadar gidecek buraya onu yaz 30.000 e gidecekse bunu buraya yaz
+    static int limitOfCounter = 100;               // nereye kadar gidecek buraya onu yaz 30.000 e gidecekse bunu buraya yaz
     static int SizeOfArray = (int) (limitOfCounter / incrementOfCounter) + 1;
     static int arrayIndexNumber = 0;
     static float[] arr = new float[SizeOfArray];

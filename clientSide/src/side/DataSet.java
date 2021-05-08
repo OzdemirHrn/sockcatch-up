@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class DataSet {
 
-    private final static String path="C:\\Users\\muham\\IdeaProjects\\sockcatch-up\\clientSide\\src\\dataset.txt";
+    private final static String path = "C:\\Users\\hrnoz\\Desktop\\sockcatch-up\\clientSide\\src\\dataset.txt";
 
     private DataSet() {
 

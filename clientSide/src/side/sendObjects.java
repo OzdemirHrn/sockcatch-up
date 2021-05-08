@@ -1,5 +1,6 @@
 package side;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -15,10 +16,12 @@ import static side.DelayObject.takeWaitingTime;
 /**
  * Objectleri Server'a gönderen Thread ve onun Runnable classı
  */
-// merhaba 2
+
 public class sendObjects implements Runnable {
 
     final static Counter counter = new Counter();
+    private final String topic;
+    private String toFile = "";
     private int sendObjectSleep;
     private LinkedBlockingDeque<Message> outgoingMessage;
     private Socket clientSocket;
@@ -29,8 +32,8 @@ public class sendObjects implements Runnable {
     private final double award = 3;
     Rtt rtt = new Rtt(0.05);
 
-    public sendObjects(LinkedBlockingDeque<Message> outgoingMessage, Socket clientSocket, int sendObjectSleep) {
-
+    public sendObjects(LinkedBlockingDeque<Message> outgoingMessage, Socket clientSocket, int sendObjectSleep,String topic) {
+        this.topic = topic;
         this.outgoingMessage = outgoingMessage;
         this.clientSocket = clientSocket;
         this.sendObjectSleep = sendObjectSleep;
@@ -44,8 +47,11 @@ public class sendObjects implements Runnable {
         double rttOfMessage = 0;
         double passengerPriority = 0;
 
+        FileWriter fileWriter = FileOperations.createInputfile(topic);
+
 
         while (true) {
+
             //alttaki kod bekletilen nesnelerden süresi bitmişleri tekrar queue ya sokuyor
 
             try {
@@ -61,7 +67,7 @@ public class sendObjects implements Runnable {
                     DQ.poll();
                 }
                 outgoingMessage.addFirst(DQ.poll().message);
-                System.out.println("Tekrar gönderiliyor");
+                //System.out.println("Tekrar gönderiliyor");
             } catch (Exception e) {
             }
 
@@ -72,6 +78,8 @@ public class sendObjects implements Runnable {
             */
 
             if (!outgoingMessage.isEmpty()) {
+
+                //System.out.println("topic= "+topic);
 
                 ObjectOutputStream outToServer;
                 try {
@@ -85,36 +93,35 @@ public class sendObjects implements Runnable {
 
                     Message passenger = outgoingMessage.peek();
                     if(passenger.isDelayed()){
-                        System.out.println("içi boş ife geldi");
+                        System.out.println("Delayed Message is trying to send");
                     }else{
                         passengerPriority = priority.priorityAssigner(passenger.getMessage());
                     }
 
                     //timer
-                    float rttTimeStart = System.nanoTime();
-                    outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
-                    outToServer.writeObject(outgoingMessage.poll());
-
+                    long rttTimeStart = System.nanoTime();
 
                     if (NashEq.action(passenger.getSize(),
-                            rttOfMessage,
-                            passengerPriority,
-                            award,
-                            QueueOccupancyReceiver.queueOccupancy,
-                            QueueOccupancyReceiver.queueOccupancy
-                            )) {
+                                        rttOfMessage,
+                                        passengerPriority,
+                                        award,
+                                        QueueOccupancyReceiver.queueOccupancy,
+                                        QueueOccupancyReceiver.queueOccupancy  ))
+                    {
+
                         outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
+
+                        System.out.println();
                         outToServer.writeObject(outgoingMessage.poll());
 
-                        //System.out.println("ife giriyorum sıyırdım");
-                        // System.out.println("rttStart "+rttTimeStart+" | rttend"+rttTimeEnd+" | aradaki fark"+ rttTime + " Timer: "+dfrtt.format(rttTime));
 
-                        double sampleRtt = (System.nanoTime() - rttTimeStart) / 1000000;
+                        long sampleRtt = (System.nanoTime() - rttTimeStart) / 1000000;
 
                         rttOfMessage = rtt.calculateRTT(sampleRtt, rtt.calculateEstimatedRtt(sampleRtt));
 
                         //timer
                         counter.increment();
+
                         clientAnalysis.publishersTimer(counter);
 
                         float son = System.nanoTime();
@@ -130,6 +137,7 @@ public class sendObjects implements Runnable {
                      */
 
                     else {
+                        System.out.println("Don't Send to Server! Wait Until a While!");
                         passenger.setPriority(passengerPriority);
                         passenger.setDelayedTrue();
                         double delayTime= takeWaitingTime(passenger.getSize(),
@@ -142,12 +150,19 @@ public class sendObjects implements Runnable {
                         DQ.add(delayObject);
                     }
 
-                } catch (IOException ex) {            // buraya yada+++++++
+                } catch (IOException ex) {
                     System.out.println("Server connection closed!");
                     clientAnalysis.printArr();
+
+                    try {
+                        fileWriter.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
                     System.exit(1);
                     break;
-                } catch (InterruptedException ex) {        // buraya eklenecek
+                } catch (InterruptedException ex) {
                     Logger.getLogger(createObjects.class.getName()).log(Level.SEVERE, null, ex);
                     clientAnalysis.printArr();
                 }

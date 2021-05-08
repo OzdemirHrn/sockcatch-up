@@ -38,13 +38,19 @@ public class Priority {
         }
 
         //System.out.println("Priority is " + priority+" fd "+firstConsistentData);
-        return priority;
+        DecimalFormat df = new DecimalFormat("#.00");
+
+        return Double.parseDouble(df.format(priority).replaceAll(",","."));
 
     }
 
     private double calculateDifference(double current, double prev) {
         double percentageDiff;
         percentageDiff = (Math.abs(current - prev) / ((current + prev) / 2)) * 100;
+        if(current+prev==0) return Integer.MAX_VALUE;
+        if(percentageDiff==0) return Integer.MAX_VALUE;
+        double retDiff = Double.parseDouble(new DecimalFormat("##.###").format(percentageDiff).replace(',', '.'));
+        if(retDiff<0.001)return 0;
         return Double.parseDouble(new DecimalFormat("##.###").format(percentageDiff).replace(',', '.'));
     }
 

@@ -30,7 +30,7 @@ public class ClientSide {
         Bu argument topic olarak görev yapıyor.
         Bu client sadece bu topice message yolluyor
         */
-        Socket clientSocket = new Socket("192.168.1.37", 6789);
+        Socket clientSocket = new Socket("192.168.1.136", 6789);
         /*
         Qmin ve Qmax'ı buradan alsam direkt???
 
@@ -59,7 +59,7 @@ public class ClientSide {
         /*
         Bu objectleri clientSocket'e gönderen Thread.
         */
-        Runnable sendingObjects = new sendObjects(goingMessages, clientSocket, sendObjectSleep);
+        Runnable sendingObjects = new sendObjects(goingMessages, clientSocket, sendObjectSleep, config.get(0));
         Thread threadSendingObjects = new Thread(sendingObjects);
         threadSendingObjects.start();
 

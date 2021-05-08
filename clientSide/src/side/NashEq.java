@@ -1,7 +1,9 @@
 package side;
 
 
-public class NashEq {
+import java.text.DecimalFormat;
+
+public class NashEq{
 
 
     private static double[][] nashArray = new double[2][4];
@@ -10,24 +12,34 @@ public class NashEq {
 
     }
 
-    /*
+    /**
         Tamam şimdi sender payoff pozitif çıktı. Ama sender drop edicek.
         Senderın drop edeceğini de mi ben hesaplıyorum. Aslında elimde tüm değerler var.
         O zaman gateway sadece drop accept hesaplicak alıcak.
         İşin çoğu sensorde.
      */
+
     public static boolean action(double size, double RTT, double priority, double award, double queueOccupancy, double queue2) {
 
-        System.out.println(
-               "Size= "+size+
-               "\nRTT= "+RTT+
-               "\nPriority= "+priority+
-               "\nAward= "+award+
-               "\nQueue= "+queueOccupancy
+        System.out.print(
+               "S="+size+
+               ", R="+RTT+
+               ", P="+priority+
+               ", A="+award+
+               ", Q="+queueOccupancy +  " ===>   "
         );
         sendAccept(size, RTT, priority, award, queueOccupancy, queue2);
         sendDrop(size, RTT, priority, award, queueOccupancy, queue2);
         notSend();
+
+        DecimalFormat df = new DecimalFormat("#.00");
+
+        String nashStr=Double.parseDouble(df.format(nashArray[0][0]).replaceAll(",","."))+", "
+                +Double.parseDouble(df.format(nashArray[0][1]).replaceAll(",","."))
+                +"    "+Double.parseDouble(df.format(nashArray[0][2]).replaceAll(",","."))
+                +", "+Double.parseDouble(df.format(nashArray[0][3]).replaceAll(",","."));
+
+        System.out.println(nashStr);
 
         if (nashArray[0][0] >= nashArray[0][2] && nashArray[0][0] > 0) {
             if (nashArray[0][1] > 0) { // zaten server side -lisini veriyor. drop ve accept tam tersi

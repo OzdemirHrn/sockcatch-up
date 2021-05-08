@@ -57,7 +57,7 @@ public class QueueInfo implements Runnable {
     private void sendToClient() throws IOException {
         //Sensore göndermesi lazım queue bilgisi
         //toSensor = ByteBuffer.allocate(4).putInt(incomingMessage.size()).array();
-        System.out.println("Queue yoğunluğunu gönderdim --> "+incomingMessage.size());
+        System.out.println("Queue Occupancy sent-> "+incomingMessage.size());
         outToSensor = sensor.getOutputStream();
         String message=""+incomingMessage.size();
         System.out.println(message);

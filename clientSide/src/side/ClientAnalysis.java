@@ -7,7 +7,7 @@ public class ClientAnalysis {
 
 
 
-    static void publishersTimer(Counter counter) {
+    void publishersTimer(Counter counter) {
 
         int interval=50;
         for(int i=0;i<20;i++){
@@ -20,7 +20,7 @@ public class ClientAnalysis {
         }
     }
 
-    public void printArr() {
+    void printArr() {
         int i;
         int counterNumber = 0;
         for (i = 0; i < arr.length; i++) {

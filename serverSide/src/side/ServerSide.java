@@ -25,7 +25,7 @@ public class ServerSide {
     /*
     Bu queue gelen objectleri tutuyor. Daha sonra bu objectleri bir thread subscriber gibi ekrana bastıracak
     */
-    private static LinkedBlockingQueue<Message> comingMessages = new LinkedBlockingQueue<Message>(100);
+    private static LinkedBlockingQueue<Message> comingMessages = new LinkedBlockingQueue<Message>(10000);
 
     public static void main(String[] argv) throws Exception {
 
