@@ -12,6 +12,8 @@ class Message implements Serializable {
     private float message;
     private int operation;
     private float size;
+    private boolean delayed = false;
+    private double priority ;
 
     public float getSize() {
         return size;
@@ -39,5 +41,21 @@ class Message implements Serializable {
         this.operation = operation;
         this.size = size;
 
+    }
+
+    public boolean isDelayed() {
+        return delayed;
+    }
+
+    public void setDelayedTrue() {
+        this.delayed = delayed;
+    }
+
+    public double getPriority() {
+        return priority;
+    }
+
+    public void setPriority(double priority) {
+        this.priority = priority;
     }
 }

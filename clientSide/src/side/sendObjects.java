@@ -43,16 +43,22 @@ public class sendObjects implements Runnable {
         final float start1 = System.nanoTime();
         Priority priority = new Priority();
         double rttOfMessage = 0;
-        double passengerPriority;
+        double passengerPriority = 0;
 
 
         while (true) {
             //alttaki kod bekletilen nesnelerden süresi bitmişleri tekrar queue ya sokuyor
             try {
+                Message delayedMessage = DQ.peek().message;
+                if (delayedMessage.getPriority()<=0.9){
+                    delayedMessage.setPriority(delayedMessage.getPriority()+0.1);
+                }else{
+                    delayedMessage.setPriority(1);
+                }
                 outgoingMessage.add(DQ.poll().message);
                 System.out.println("Tekrar gönderiliyor");
-            } catch (Exception e) {
 
+            } catch (Exception e) {
             }
 
            /*
@@ -74,7 +80,12 @@ public class sendObjects implements Runnable {
                     //poll-> return and remove yapiyor.
 
                     Message passenger = outgoingMessage.peek();
-                    passengerPriority = priority.priorityAssigner(passenger.getMessage());
+                    if(passenger.isDelayed()){
+
+                    }else{
+                        passengerPriority = priority.priorityAssigner(passenger.getMessage());
+                    }
+
                     //timer
                     float rttTimeStart = System.nanoTime();
                     outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
@@ -115,14 +126,15 @@ public class sendObjects implements Runnable {
                      */
 
                     else {
+                        passenger.setPriority(passengerPriority);
                         long delayTime= takeWaitingTime(passenger.getSize(),
                                 rttOfMessage,
                                 passengerPriority,
                                 award,
                                 QueueOccupancyReceiver.queueOccupancy,
                                 QueueOccupancyReceiver.queueOccupancy);
-                        DelayObject delayObject = new DelayObject(outgoingMessage.peek(),delayTime);
-                        DQ.add(delayObject) ;
+                        DelayObject delayObject = new DelayObject(outgoingMessage.poll(),delayTime);
+                        DQ.add(delayObject);
                     }
 
                 } catch (IOException ex) {            // buraya yada+++++++
