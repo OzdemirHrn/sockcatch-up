@@ -148,6 +148,8 @@ public class sendObjects implements Runnable {
                                 QueueOccupancyReceiver.queueOccupancy);
                         DelayObject delayObject = new DelayObject(outgoingMessage.poll(),delayTime);
                         DQ.add(delayObject);
+
+
                     }
 
                 } catch (IOException ex) {

@@ -30,7 +30,7 @@ public class ClientSide {
         Bu argument topic olarak görev yapıyor.
         Bu client sadece bu topice message yolluyor
         */
-        Socket clientSocket = new Socket("192.168.1.136", 6789);
+        Socket clientSocket = new Socket("192.168.1.35", 6789);
         /*
         Qmin ve Qmax'ı buradan alsam direkt???
 

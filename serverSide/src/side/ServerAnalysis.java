@@ -34,10 +34,8 @@ public class ServerAnalysis {
                 totalDropped += eachClient.dropped;
 
             }
-
             */
             droppedSize[arrayIndexNumber] = totalDropped;
-
             //System.out.println("Total Number of Dropped Messages: " + totalDropped);
         }
 
