@@ -20,7 +20,7 @@ public class PrintQueue implements Runnable {
     // test variables
     static int incrementOfCounter = 50;                 // tutulma aralığını buraya yaz, ne sıklıkla tutulacak
     static int totalCounter = incrementOfCounter;
-    static int limitOfCounter = 100;               // nereye kadar gidecek buraya onu yaz 30.000 e gidecekse bunu buraya yaz
+    static int limitOfCounter = 1000;               // nereye kadar gidecek buraya onu yaz 30.000 e gidecekse bunu buraya yaz
     static int SizeOfArray = (int) (limitOfCounter / incrementOfCounter) + 1;
     static int arrayIndexNumber = 0;
     static float[] arr = new float[SizeOfArray];
@@ -101,9 +101,31 @@ public class PrintQueue implements Runnable {
     public void printArr() {
         int i;
         int counterNumber = 0;
+        System.out.println("counterNumber********************************************************************************");
         for (i = 0; i < arr.length; i++) {
             counterNumber = counterNumber + incrementOfCounter;
-            System.out.println("Counter number: " + counterNumber + " time: " + arr[i] + "  Queue size is " + QueueSize[i] + " Dropped count: " + droppedSize[i]);
+            System.out.println(counterNumber);
+        }
+
+        counterNumber = 0;
+        System.out.println("time:********************************************************************************");
+        for (i = 0; i < arr.length; i++) {
+            counterNumber = counterNumber + incrementOfCounter;
+            System.out.println(arr[i]);
+        }
+
+        counterNumber = 0;
+        System.out.println("Queue Size :********************************************************************************");
+        for (i = 0; i < arr.length; i++) {
+            counterNumber = counterNumber + incrementOfCounter;
+            System.out.println(QueueSize[i]);
+        }
+
+        counterNumber = 0;
+        System.out.println("Dropped Count :********************************************************************************");
+        for (i = 0; i < arr.length; i++) {
+            counterNumber = counterNumber + incrementOfCounter;
+            System.out.println(droppedSize[i]);
         }
 
     }

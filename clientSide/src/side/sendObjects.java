@@ -31,6 +31,7 @@ public class sendObjects implements Runnable {
 
     private final double award = 3;
     Rtt rtt = new Rtt(0.05);
+    boolean rttFirstCome = false;
 
     public sendObjects(LinkedBlockingDeque<Message> outgoingMessage, Socket clientSocket, int sendObjectSleep,String topic) {
         this.topic = topic;
@@ -115,9 +116,12 @@ public class sendObjects implements Runnable {
                         outToServer.writeObject(outgoingMessage.poll());
 
 
-                        long sampleRtt = (System.nanoTime() - rttTimeStart) / 1000000;
+                        long sampleRtt = (System.nanoTime() - rttTimeStart) ;
 
+
+                        if(rttFirstCome)
                         rttOfMessage = rtt.calculateRTT(sampleRtt, rtt.calculateEstimatedRtt(sampleRtt));
+                        rttFirstCome = true;
 
                         //timer
                         counter.increment();
