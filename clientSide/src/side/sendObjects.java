@@ -24,27 +24,26 @@ public class sendObjects implements Runnable {
     private LinkedBlockingQueue<Message> outgoingMessage;
     private Socket clientSocket;
 
-    private final double award = 3;
-    Rtt rtt = new Rtt(0.05);
 
     public sendObjects(LinkedBlockingQueue<Message> outgoingMessage, Socket clientSocket, int sendObjectSleep) {
 
         this.outgoingMessage = outgoingMessage;
         this.clientSocket = clientSocket;
         this.sendObjectSleep = sendObjectSleep;
+
     }
 
     //TIMER
     static void publishersTimer() {
 
-        int interval=50;
-        for(int i=0;i<20;i++){
+        int interval = 50;
+        for (int i = 0; i < 20; i++) {
             if (counter.getCounter() == interval) {
                 end = System.nanoTime() - start;
                 arr[i] = (float) (end / 1e6);
                 break;
             }
-            interval+=50;
+            interval += 50;
         }
 
 
@@ -54,77 +53,32 @@ public class sendObjects implements Runnable {
     public void run() {
 
         final float start1 = System.nanoTime();
-        Priority priority = new Priority();
-        double rttOfMessage = 0;
-        double passengerPriority;
-
 
         while (true) {
-           /*
-            Buraya wait Thread methodu ekleyecektim. Loop sürekli dönmesin
-            Queue boş olduğunda beklesin diye.
-            ---EKLEMEDIM SADECE IF STATEMENT---
-            */
 
             if (!outgoingMessage.isEmpty()) {
 
                 ObjectOutputStream outToServer;
                 try {
-                    int randomSending = getRandomVariable();
 
+                    int randomSending = getRandomVariable();
                     Thread.sleep(sendObjectSleep + randomSending);
                     //outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
                     //System.out.println(outgoingMessage.peek().getMessage()+"  "+outgoingMessage.peek().getTopic()+"  Queue size is "+outgoingMessage.size());
 
-                    /*
-                    Thread sleep parametresine göre belli aralıklarla queuedaki
-                    head elementi servera yollamaya çalışıyor.
-                    */
-                    //poll-> return and remove yapiyor.
-
-                    Message passenger = outgoingMessage.peek();
-                    passengerPriority = priority.priorityAssigner(passenger.getMessage());
-                    //timer
-                    float rttTimeStart = System.nanoTime();
                     outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
                     outToServer.writeObject(outgoingMessage.poll());
 
+                    //timer
+                    counter.increment();
+                    publishersTimer();
 
-                    if (NashEq.action(passenger.getSize(),
-                            rttOfMessage,
-                            passengerPriority,
-                            award,
-                            QueueOccupancyReceiver.queueOccupancy,
-                            QueueOccupancyReceiver.queueOccupancy)) {
-                        outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
-                        outToServer.writeObject(outgoingMessage.poll());
-
-                        //System.out.println("ife giriyorum sıyırdım");
-                        // System.out.println("rttStart "+rttTimeStart+" | rttend"+rttTimeEnd+" | aradaki fark"+ rttTime + " Timer: "+dfrtt.format(rttTime));
-
-
-                        double sampleRtt = (System.nanoTime() - rttTimeStart) / 1000000;
-
-                        rttOfMessage = rtt.calculateRTT(sampleRtt, rtt.calculateEstimatedRtt(sampleRtt));
-
-
-                        //timer
-                        counter.increment();
-                        publishersTimer();
-
-                        float son = System.nanoTime();
-                        DecimalFormat df = new DecimalFormat("#.###");
-                        double time = son - start1;
-                        double time1 = time % 1000000;
-                        time = (time - time1) / 1000000;
-                        System.out.println("Counter: " + counter.getCounter() + " Timer: " + df.format(time));
-                    }
-
-                    /*
-                     * Nash Eq. Gönderme kararı alınca buraya düşecek.
-                     */
-
-                    else System.out.println("Gönderme!!");
+                    float son = System.nanoTime();
+                    DecimalFormat df = new DecimalFormat("#.###");
+                    double time = son - start1;
+                    double time1 = time % 1000000;
+                    time = (time - time1) / 1000000;
+                    System.out.println("Counter: " + counter.getCounter() + " Timer: " + df.format(time));
 
 
                 } catch (IOException ex) {            // buraya yada+++++++
@@ -168,14 +122,9 @@ public class sendObjects implements Runnable {
         } else if (randomSending < 80) {
             randomSending = randomSending * 9;
         } else if (randomSending < 93) {
-            //19k oalbilrş
-
             randomSending = 0;
-
         }
-
         return randomSending;
-
     }
 
     public void printArr() {

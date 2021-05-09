@@ -16,12 +16,7 @@ public final class WelcomeMessages implements Runnable {
      */
     private Socket client = null;
     private LinkedBlockingQueue<Message> incomingMessage;
-    /*
-     şimdi Qmin ve Qmaxı her new connection established'ta göndermem lazım.
-     sadece 1 kere gönderilecek.
-     */
     int dropped;
-
 
     public WelcomeMessages(Socket clientSocket, LinkedBlockingQueue<Message> incomingMessage) {
         this.incomingMessage = incomingMessage;

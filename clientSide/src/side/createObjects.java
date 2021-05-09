@@ -36,16 +36,9 @@ public class createObjects implements Runnable {
 
     @Override
     public void run() {
+
         int dropped = 0;
         int index = 0;
-        /*
-        obje oluştursam.
-
-
-         */
-
-
-
 
         ArrayList<Float> temperatureSensor1 = null;
         try {
@@ -57,28 +50,13 @@ public class createObjects implements Runnable {
 
         while (true) {
 
-
-            /*
-
-            priority objesinden emthod çağırsam current value ile..
-             */
-
-
             try {
                 Thread.sleep(createObjectSleep);
             } catch (InterruptedException ex) {
                 Logger.getLogger(createObjects.class.getName()).log(Level.SEVERE, null, ex);
             }
-            /*
-            Belli aralıklarla yeni objectler oluşturup bunları Queue'ya atıyorum.
-            MQTT'deki publisher client görevi.
-            */
 
-            /*
-            Burada artık random olmayacak.
-             */
             operation = createRandomNumberBetween(1, 100);
-
 
             try {
                 if (outgoingMessage.size() < capacityOfQueue) {
@@ -87,8 +65,6 @@ public class createObjects implements Runnable {
                     index++;
                     //System.out.println(message);
                     outgoingMessage.add(new Message(topic, message, operation, size));
-
-
 
                 } else {
                     dropped++;
