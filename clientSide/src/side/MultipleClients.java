@@ -30,7 +30,8 @@ class RunSensorsSeparately implements Runnable {
     @Override
     public void run() {
         try {
-            ClientSide.main(sensorConfig);
+
+            new ClientSide().main(sensorConfig);
         } catch (Exception ex) {
             Logger.getLogger(RunSensorsSeparately.class.getName()).log(Level.SEVERE, null, ex);
         }

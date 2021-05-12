@@ -1,34 +1,7 @@
-+++Mesajı göndermedi --> bekletiyor ->> aynı sensörün başka mesajı gönderilebilir mi ve bu mantıklı mı?
-Size= 0.5
-RTT= 0.0
-Priority= 2.6812531374104604E-12
-Award= 3.0
-Queue= 0.0
-( -0.49999999999195627,-0.49999999999195627 )   ( -0.5,0.49999999999195627 )   ( 0.0,0.0 )
-
-+++Clientleri tek tek runlayınca ilk sensorün rtt hep 0, diğerlerinin hep 1 oluyor. - düzeldi yaptım - malik
-+++ clientside da iki yeni class oluşturuldu.
-
-+++T̶x̶t̶'̶d̶e̶n̶ ̶i̶n̶p̶u̶t̶l̶a̶r̶ı̶ ̶o̶k̶u̶s̶u̶n̶.̶.̶.̶
-
 +++Size şuan default 0.5
 
-+++runConfigurations içine tüm sensörlerin columnları topicleri eklenicek
++++PriorityKorçak NaN dönderiyor.
 
-+++static ip hizmeti alsak direkt java socketten yollayabilir miyiz?
++++ClientSide gönderme sayısını kısıtlicak. Serverside yerine
 
 
-
-malik
-+++Clientleri tek tek runlayınca ilk sensorün rtt hep 0, diğerlerinin hep 1 oluyor. - düzeldi yaptım
-
-ClientSide
-+++ clientside da iki yeni class oluşturuldu.
-randomVariable : bu bizim random variable generate ettiğimiz class. daha öncesinde sendObjects clasının içerisinde
-bir method yardımı ile yapıyorduk.
-ClientAnalysis : bu bizim analiz ve raporlama classımız. daha öncesinde sendobject classımız içerisinde yapıyorduk.
-
-ServerSide
-serverside da artık iki yeni classımız var bunlar.
-ServerOperation : bu classımız iş yükünü yapan class ımız. daha öncesinde printQueue classında bir methoddu.
-ServerAnalysis : bu classımız sayesinde artık serverdaki raporlamayı yapıyoruz. printQueue deydi buda methodlar olarak.

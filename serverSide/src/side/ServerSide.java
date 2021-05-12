@@ -18,14 +18,14 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class ServerSide {
 
     static final int droppedTotal = 0;
-    private static ExecutorService service = Executors.newFixedThreadPool(20);
+    private static ExecutorService service = Executors.newFixedThreadPool(100);
     private static Queue<WelcomeMessages> allClients = new LinkedList();
     static float Qmin=20,Qmax=80;
-    // q değeri
+
     /*
     Bu queue gelen objectleri tutuyor. Daha sonra bu objectleri bir thread subscriber gibi ekrana bastıracak
     */
-    private static LinkedBlockingQueue<Message> comingMessages = new LinkedBlockingQueue<Message>(10000);
+    private static LinkedBlockingQueue<Message> comingMessages = new LinkedBlockingQueue<Message>(100);
 
     public static void main(String[] argv) throws Exception {
 

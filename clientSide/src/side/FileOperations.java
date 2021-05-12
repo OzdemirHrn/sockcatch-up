@@ -5,14 +5,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class FileOperations {
-    private static final String path = "C:\\Users\\malik türkoğlu\\Desktop\\fileClient";
+    private static final String path = "C:\\Users\\hrnoz\\Desktop\\OutputSensor\\";
 
-
-    public static FileWriter createInputfile(String fileName) {
+    public  FileWriter createInputfile(String fileName) {
 
         String input = path + fileName.replace("/","") + ".txt";
 
-        File file = null;
+        File file;
         FileWriter filewriter = null;
 
 
@@ -21,17 +20,6 @@ public class FileOperations {
         try {
             filewriter = new FileWriter(file);
 
-
-            String inputFile = "";
-
-
-            inputFile += "";
-
-
-            inputFile += "\n";
-
-
-            filewriter.write(inputFile);
 
 
         } catch (IOException e) {

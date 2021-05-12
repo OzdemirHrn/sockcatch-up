@@ -15,7 +15,7 @@ public class ClientSide {
     Gidecek mesajların beklediği Queue
     Thread Safe için Blocking Queue kullandım. Ama tekrar bakılabilir -----
     */
-    public static void main(List<String> config) throws Exception {
+    public void main(List<String> config) throws Exception {
 
         int createObjectSleep = Integer.parseInt(config.get(1));
         int sendObjectSleep = Integer.parseInt(config.get(2));
@@ -30,7 +30,7 @@ public class ClientSide {
         Bu argument topic olarak görev yapıyor.
         Bu client sadece bu topice message yolluyor
         */
-        Socket clientSocket = new Socket("192.168.72.138", 6789);
+        Socket clientSocket = new Socket("192.168.1.136", 6789);
         /*
         Qmin ve Qmax'ı buradan alsam direkt???
 
@@ -63,6 +63,11 @@ public class ClientSide {
         Thread threadSendingObjects = new Thread(sendingObjects);
         threadSendingObjects.start();
 
+        threadCreatingObject.join();
+        threadReceivingQueueOcc.join();
+        threadSendingObjects.join();
+
+        System.exit(1);
     }
 
 }
