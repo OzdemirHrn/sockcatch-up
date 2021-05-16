@@ -5,7 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class FileOperationServer {
-    private static final String path = "C:\\Users\\malik türkoğlu\\Desktop\\yeni\\OutputServer\\";
+    private static final String path = "C:\\Users\\muham\\Desktop\\OutputSensor\\OutputSensor";
 
     public  FileWriter createInputfile(String fileName) {
 
