@@ -10,7 +10,6 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class ClientSide {
 
-    static int Qmin,Qmax;
     /*
     Gidecek mesajların beklediği Queue
     Thread Safe için Blocking Queue kullandım. Ama tekrar bakılabilir -----
@@ -36,18 +35,6 @@ public class ClientSide {
 
          */
 
-        ObjectInputStream ois;
-
-        ois = new ObjectInputStream(clientSocket.getInputStream());
-        String message = (String) ois.readObject();
-        Qmin= Integer.parseInt(message.substring(0,2));
-        Qmax=Integer.parseInt(message.substring(5,7));
-        System.out.println(Qmin+"  "+Qmax);
-
-        Runnable receivingQueueOcc = new QueueOccupancyReceiver(clientSocket);
-        Thread threadReceivingQueueOcc = new Thread(receivingQueueOcc);
-        threadReceivingQueueOcc.start();
-
        /*
         Message sınıfından topic ve random value argumentleriyle
         objectler oluşturan Thread.
@@ -64,7 +51,6 @@ public class ClientSide {
         threadSendingObjects.start();
 
         threadCreatingObject.join();
-        threadReceivingQueueOcc.join();
         threadSendingObjects.join();
 
         System.exit(1);
