@@ -66,7 +66,7 @@ public class sendObjects implements Runnable {
                 }
                 delayedMessage.setDelayedTrue();
                 if (delayedMessage.getCounter() == 4) {
-                    DQ.poll();
+                    System.out.println("dropped");
                 } else {
                     outgoingMessage.addFirst(delayedMessage);
                 }
@@ -90,7 +90,7 @@ public class sendObjects implements Runnable {
                 try {
                     int randomSending = randomVariable.getRandomVariable();
 
-                    Thread.sleep(sendObjectSleep + randomSending);
+
                     //outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
                     //System.out.println(outgoingMessage.peek().getMessage()+"  "+outgoingMessage.peek().getTopic()+"  Queue size is "+outgoingMessage.size());
 
@@ -115,11 +115,11 @@ public class sendObjects implements Runnable {
                             QueueOccupancyReceiver.queueOccupancy,
                             QueueOccupancyReceiver.queueOccupancy,
                             fileWriter)) {
-
+                        Thread.sleep(sendObjectSleep);
                         outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
 
                         System.out.println();
-                        passenger.setCounter(passenger.getCounter()+1);
+
 
                         outToServer.writeObject(outgoingMessage.poll());
 
@@ -164,6 +164,7 @@ public class sendObjects implements Runnable {
                                 QueueOccupancyReceiver.queueOccupancy);
                         DelayObject delayObject = new DelayObject(outgoingMessage.poll(), delayTime);
                         DQ.add(delayObject);
+                        passenger.setCounter(passenger.getCounter()+1);
                     }
 
                 } catch (IOException ex) {
