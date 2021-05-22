@@ -39,9 +39,9 @@ public class QueueInfo implements Runnable {
             try {
                 // Bu hiç güzel bir busy waitingten kaçış değil ama iş görür şimdilik
                 // Şuan saniyede bir gönderiyor.
-                //Thread.sleep(0);
+                Thread.sleep(500);
                 sendToClient();
-            } catch (IOException  e) {
+            } catch (IOException | InterruptedException e) {
                 try {
                     sensor.close();
                 } catch (IOException ioException) {
