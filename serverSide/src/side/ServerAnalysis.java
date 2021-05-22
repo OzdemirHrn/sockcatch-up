@@ -1,8 +1,8 @@
 package side;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Queue;
 
 public class ServerAnalysis {
 
@@ -21,7 +21,13 @@ public class ServerAnalysis {
     static int[] droppedSize = new int[SizeOfArray];
 
 
-    void publishersTimer(int incomingMessageSize, Counter counter,float start ) {
+    FileWriter fileWriterCounter = new FileOperationServer().createInputfile("counter");
+    FileWriter fileWriterTime = new FileOperationServer().createInputfile("time");
+    FileWriter fileWriterQueueSize = new FileOperationServer().createInputfile("queueSize");
+    FileWriter fileWriterDroppedCount = new FileOperationServer().createInputfile("droppedCount");
+
+
+    void publishersTimer(int incomingMessageSize, Counter counter, float start, Queue<WelcomeMessages> allClients ) {
 
         if ((counter.getCounter() == totalCounter) && (counter.getCounter() <= limitOfCounter)) {
             end = System.nanoTime() - start;
@@ -31,15 +37,12 @@ public class ServerAnalysis {
             totalCounter = totalCounter + incrementOfCounter;
             int totalDropped = 0;
 
-           /*                                                              // burası total drop bakılacak
+                                                                        // burası total drop bakılacak
             for (WelcomeMessages eachClient : allClients) {
-
                 // System.out.println("Dropped Messages" + eachClient.dropped);
                 totalDropped += eachClient.dropped;
-
             }
 
-            */
             droppedSize[arrayIndexNumber] = totalDropped;
 
             //System.out.println("Total Number of Dropped Messages: " + totalDropped);
@@ -50,33 +53,43 @@ public class ServerAnalysis {
     public void printArr() throws IOException {
         int i;
         int counterNumber = 0;
-        String inputFileCounter = "";
-        String inputFileTime = "";
-        String inputFileQueueSize = "";
-        String inputFileDroppedSize = "";
-
-
-        String path = "C:\\Users\\malik türkoğlu\\Desktop\\";
-        String inputCounter = path + "inputCounter" + ".txt";
-        File fileCounter = null;
-        FileWriter filewriterCounter = null;
-        fileCounter = new File(inputCounter);
-        filewriterCounter = new FileWriter(fileCounter);
-
-
+        System.out.println("counterNumber********************************************************************************");
         for (i = 0; i < arr.length; i++) {
             counterNumber = counterNumber + incrementOfCounter;
-            System.out.println("Counter number: " + counterNumber + " time: " + arr[i] + "  Queue size is " + QueueSize[i] + " Dropped count: " + droppedSize[i]);
-            inputFileCounter += counterNumber + "\n";;
+            System.out.println(counterNumber);
+            fileWriterCounter.write(counterNumber+"\n");
         }
-        System.out.println(inputFileCounter);
+        fileWriterCounter.close();
 
+        counterNumber = 0;
+        System.out.println("time:********************************************************************************");
+        for (i = 0; i < arr.length; i++) {
+            counterNumber = counterNumber + incrementOfCounter;
+            System.out.println(arr[i]);
+            fileWriterTime.write(arr[i]+"\n");
+        }
+        fileWriterTime.close();
 
-        filewriterCounter.write(inputFileCounter);
-        filewriterCounter.close();
-    }
+        counterNumber = 0;
+        System.out.println("Queue Size :********************************************************************************");
+        for (i = 0; i < arr.length; i++) {
+            counterNumber = counterNumber + incrementOfCounter;
+            System.out.println(QueueSize[i]);
+            fileWriterQueueSize.write(QueueSize[i]+"\n");
+        }
+        fileWriterQueueSize.close();
 
+        counterNumber = 0;
+        System.out.println("Dropped Count :********************************************************************************");
+        for (i = 0; i < arr.length; i++) {
+            counterNumber = counterNumber + incrementOfCounter;
+            System.out.println(droppedSize[i]);
+            fileWriterDroppedCount.write(droppedSize[i]+"\n");
+        }
+        fileWriterDroppedCount.close();
+        }
 
 
 }
+
 

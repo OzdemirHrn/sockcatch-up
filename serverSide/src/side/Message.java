@@ -15,6 +15,17 @@ class Message implements Serializable {
     private boolean delayed = false;
     private double priority;
     private int counter=0;
+    private double rtt=0;
+
+    public double getRtt() {
+        return rtt;
+    }
+
+    public void setRtt(double rtt) {
+        this.rtt = rtt;
+    }
+
+
 
     public float getSize() {
         return size;

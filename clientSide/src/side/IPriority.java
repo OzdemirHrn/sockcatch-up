@@ -6,4 +6,10 @@ public interface IPriority {
 
     double priorityAssigner(float data);
 
+    void setFirstConsistentData(double firstConsistentData);
+
+    default void setTempAnnealing(double tempAnnealing) {
+
+    }
+
 }

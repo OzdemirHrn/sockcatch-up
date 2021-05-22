@@ -39,9 +39,9 @@ public class QueueInfo implements Runnable {
             try {
                 // Bu hiç güzel bir busy waitingten kaçış değil ama iş görür şimdilik
                 // Şuan saniyede bir gönderiyor.
-                Thread.sleep(500);
+                //Thread.sleep(0);
                 sendToClient();
-            } catch (IOException | InterruptedException e) {
+            } catch (IOException  e) {
                 try {
                     sensor.close();
                 } catch (IOException ioException) {
@@ -57,10 +57,9 @@ public class QueueInfo implements Runnable {
     private void sendToClient() throws IOException {
         //Sensore göndermesi lazım queue bilgisi
         //toSensor = ByteBuffer.allocate(4).putInt(incomingMessage.size()).array();
-        System.out.println("Queue Occupancy sent-> "+incomingMessage.size());
+        //System.out.println("Queue Occupancy sent-> "+incomingMessage.size());
         outToSensor = sensor.getOutputStream();
         String message=""+incomingMessage.size();
-        System.out.println(message);
         toSensor=message.getBytes();
 
         outToSensor.write(toSensor);

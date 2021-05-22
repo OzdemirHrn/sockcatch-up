@@ -7,9 +7,11 @@ import java.util.Queue;
 
 public class Priority implements IPriority {
 
+
     private double tempAnnealing = 0.1;
     private double firstConsistentData = 0;
     private double priority = 1;
+    private int counter = 0;
 
 
     public Priority() {
@@ -22,20 +24,36 @@ public class Priority implements IPriority {
     public double priorityAssigner(float data) {
         //System.out.println("Data is "+data);
         //System.out.println("Difference is: % " + calculateDifference(data, firstConsistentData));
-        if (calculateDifference(data, firstConsistentData) >= 1) {
-            firstConsistentData = data;
+        double percentageDifference = calculateDifference(data, firstConsistentData);
+        if (percentageDifference >= 1) {
+            /*
+            Fark yüzde 1'den büyükse mi yoksa son gönderdiğime göre mi yapmak mantıklı
+             */
+            //firstConsistentData = data;
             priority = 1;
             tempAnnealing = 0.1;
+            counter = 0;
         } else {
-            priority = Math.exp((-tempAnnealing) / calculateDifference(data, firstConsistentData));
+            counter++;
+            System.out.println(counter/10.0);
+            priority = Math.exp((-tempAnnealing) / (percentageDifference+counter/10.0));
             // 2 kat değil de 1.5 falan artar belki
             tempAnnealing *= 1.5;
+
+            System.out.println("priority="+priority+" counter= "+counter);
+
+            if (counter == 9) {
+                priority = 1;
+                tempAnnealing = 0.1;
+                counter = 0;
+            }
+
         }
 
         //System.out.println("Priority is " + priority+" fd "+firstConsistentData);
         DecimalFormat df = new DecimalFormat("#.00");
 
-        return Double.parseDouble(df.format(priority).replaceAll(",","."));
+        return Double.parseDouble(df.format(priority).replaceAll(",", "."));
 
     }
 
@@ -43,14 +61,23 @@ public class Priority implements IPriority {
     public double calculateDifference(double current, double prev) {
         double percentageDiff;
         percentageDiff = (Math.abs(current - prev) / ((current + prev) / 2)) * 100;
-        if(current+prev==0) return Integer.MAX_VALUE;
-        if(percentageDiff==0) return Integer.MAX_VALUE;
+        if (current + prev == 0) return Integer.MAX_VALUE;
+        if (percentageDiff == 0) return Integer.MAX_VALUE;
         double retDiff = Double.parseDouble(new DecimalFormat("##.###").format(percentageDiff).replace(',', '.'));
-        if(retDiff<0.001)return 0;
-        return Double.parseDouble(new DecimalFormat("##.###").format(percentageDiff).replace(',', '.'));
+        if (retDiff < 0.001) return 0;
+        System.out.println("Difference= "+ retDiff);
+        return retDiff;
     }
 
 
+    public void setFirstConsistentData(double firstConsistentData) {
+        this.firstConsistentData = firstConsistentData;
+    }
+
+
+    public void setTempAnnealing(double tempAnnealing) {
+        this.tempAnnealing = tempAnnealing;
+    }
 
     /**
      * For Test
@@ -108,7 +135,6 @@ public class Priority implements IPriority {
     }
 
 */
-
 
 
 }

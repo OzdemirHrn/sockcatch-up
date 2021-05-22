@@ -6,37 +6,21 @@ public class ServerOperation {
 
 
 
-    public void operation(String messageDeviceInfo, int messageOperation) {
+    public void operation(String messageDeviceInfo, int messageOperation) throws InterruptedException {
 
-        if (messageOperation > 4000) {
+        if (messageOperation > 4000) { //7m
+            Thread.sleep(20);
 
-            int periot = 0;
-            for (int i = 0; i < 7000000; i++) {
-                periot++;
-                if (periot == 700000) {
-                    System.out.print("");
-                }
-            }
-        } else if (messageOperation > 3000) {
+        } else if (messageOperation > 3000) { //700k
+            Thread.sleep(50);
 
-            int periot = 0;
-            for (int i = 0; i < 700000; i++) {
-                periot++;
-                if (periot == 70000) {
-                    System.out.print("");
-                }
-            }
         } else if (messageOperation > 2000) {
 
-        } else if (messageOperation > 1000) {
 
-            int periot = 0;
-            for (int i = 0; i < 70000000; i++) {
-                periot++;
-                if (periot == 7000000) {
-                    System.out.print("");
-                }
-            }
+
+        } else if (messageOperation > 1000) { //70m
+            Thread.sleep(100);
+
         } else {
             System.out.println("case:else buraya girmememiz lazım");
         }

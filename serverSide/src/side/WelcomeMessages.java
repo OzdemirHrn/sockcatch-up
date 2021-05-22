@@ -15,7 +15,9 @@ public final class WelcomeMessages implements Runnable {
     Objectler burada karşılandıktan sonra queueya alınıyor.
      */
     private Socket client = null;
-    private LinkedBlockingQueue<Message> incomingMessage;
+    private LinkedBlockingQueue<Message> incomingMessagesQueue;
+    private NashEq nashEq = new NashEq();
+    private final double award = 3;
     /*
      şimdi Qmin ve Qmaxı her new connection established'ta göndermem lazım.
      sadece 1 kere gönderilecek.
@@ -24,7 +26,7 @@ public final class WelcomeMessages implements Runnable {
 
 
     public WelcomeMessages(Socket clientSocket, LinkedBlockingQueue<Message> incomingMessage) {
-        this.incomingMessage = incomingMessage;
+        this.incomingMessagesQueue = incomingMessage;
         this.client = clientSocket;
 
     }
@@ -34,12 +36,13 @@ public final class WelcomeMessages implements Runnable {
 
         while (true) {
 
+
             try {
 
                 InputStream inputStream = client.getInputStream();
                 ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
 
-                 /**
+                 /*
                 ObjectOutputStream oos = new ObjectOutputStream(client.getOutputStream());
                 oos.writeObject("Hi Client, BU KUYRUK YOUĞUNLUĞUDUR " + incomingMessage.size());
                 */
@@ -47,15 +50,30 @@ public final class WelcomeMessages implements Runnable {
                 /*
                 Queueya objectlerin eklendiği kısım
                  */
+                Message inComingMessage = (Message) objectInputStream.readObject();
 
-                try {
-                    incomingMessage.add(((Message) objectInputStream.readObject()));
-                } catch (IllegalStateException | ClassNotFoundException e) {
-                    dropped++;
-                    //System.out.println("dropped count: "+ dropped );
+                if (nashEq.action(
+                        inComingMessage.getSize(),
+                        inComingMessage.getRtt(),
+                        inComingMessage.getPriority(),
+                        award,
+                        getScaledQueueOccupancy(),
+                        getScaledQueueOccupancy())) {
+
+                    try {
+                        incomingMessagesQueue.add(inComingMessage);
+                    } catch (IllegalStateException e) {
+                        dropped++;
+                        //System.out.println("dropped count: "+ dropped );
+                    }
+
+
+                } else {
+                    System.out.println("Incoming Message Has Dropped!");
                 }
 
-            } catch (IOException ex) {
+
+            } catch (IOException | ClassNotFoundException ex) {
 
                 try {
                     /*
@@ -72,6 +90,15 @@ public final class WelcomeMessages implements Runnable {
             }
         }
 
+    }
+
+
+    private double getScaledQueueOccupancy() {
+        double queueValue = incomingMessagesQueue.size(), queueOccupancy;
+        if (queueValue < ServerSide.Qmin) queueOccupancy = 0;
+        else if (queueValue > ServerSide.Qmax) queueOccupancy = 1;
+        else queueOccupancy = queueValue / 100;
+        return queueOccupancy;
     }
 
 }

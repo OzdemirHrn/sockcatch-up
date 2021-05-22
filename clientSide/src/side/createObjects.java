@@ -78,6 +78,7 @@ public class createObjects implements Runnable {
             Burada artık random olmayacak.
              */
             operation = createRandomNumberBetween(1, 100);
+            // 1000 2000 3000 4000
 
 
             try {
@@ -112,9 +113,8 @@ public class createObjects implements Runnable {
 
     private int createRandomNumberBetween(int min, int max) {
 
-        int randomNumber = random.nextInt(max - min + 1) + min;//1-100
         int selectOperationType = (random.nextInt(3) + 1) * 1000;
-        return selectOperationType + randomNumber;
+        return selectOperationType + 1;
 
     }
 

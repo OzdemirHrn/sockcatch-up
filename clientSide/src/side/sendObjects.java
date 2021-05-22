@@ -20,11 +20,12 @@ import static side.DelayObject.takeWaitingTime;
 public class sendObjects implements Runnable {
 
     final static Counter counter = new Counter();
+    final static int limitOfMessage = 10000;
     private final String topic;
-    private String toFile = "";
-    private int sendObjectSleep;
+    private final int sendObjectSleep;
     private LinkedBlockingDeque<Message> outgoingMessage;
-    private Socket clientSocket;
+    private final Socket clientSocket;
+
     RandomVariable randomVariable = new RandomVariable();
     ClientAnalysis clientAnalysis = new ClientAnalysis();
     BlockingQueue<DelayObject> DQ = new DelayQueue<>();
@@ -52,7 +53,7 @@ public class sendObjects implements Runnable {
         FileWriter fileWriter = new FileOperations().createInputfile(topic);
 
 
-        while (true) {
+        while (!counter.isReachedToLimit(limitOfMessage)) {
 
             //alttaki kod bekletilen nesnelerden süresi bitmişleri tekrar queue ya sokuyor
 
@@ -90,7 +91,7 @@ public class sendObjects implements Runnable {
                 try {
                     int randomSending = randomVariable.getRandomVariable();
 
-                    Thread.sleep(sendObjectSleep + randomSending);
+
                     //outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
                     //System.out.println(outgoingMessage.peek().getMessage()+"  "+outgoingMessage.peek().getTopic()+"  Queue size is "+outgoingMessage.size());
 
@@ -103,6 +104,7 @@ public class sendObjects implements Runnable {
                         passengerPriority = passenger.getPriority();
                     } else {
                         passengerPriority = priority.priorityAssigner(passenger.getMessage());
+                        passenger.setPriority(passengerPriority);
                     }
 
                     //timer
@@ -116,23 +118,34 @@ public class sendObjects implements Runnable {
                             QueueOccupancyReceiver.queueOccupancy,
                             fileWriter)) {
 
+                        passenger.setRtt(rttOfMessage);
+
                         outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
 
                         System.out.println();
                         passenger.setCounter(passenger.getCounter()+1);
 
+                        //Son gönderdiğim mesaj <-- First Consistent Data
+                        priority.setFirstConsistentData(passenger.getMessage());
+                        //priority.setTempAnnealing(0.1);
                         outToServer.writeObject(outgoingMessage.poll());
 
 
                         long sampleRtt = (System.nanoTime() - rttTimeStart);
+                        Thread.sleep(160);
 
-
-                        if (rttFirstCome)
+                        if (rttFirstCome){
                             rttOfMessage = rtt.calculateRTT(sampleRtt, rtt.calculateEstimatedRtt(sampleRtt));
+
+
+                        }
+
+
                         rttFirstCome = true;
 
                         //timer
                         counter.increment();
+
 
 
                         clientAnalysis.publishersTimer(counter);
@@ -144,7 +157,7 @@ public class sendObjects implements Runnable {
                         time = (time - time1) / 1000000;
                         String counterTime = "Counter: " + counter.getCounter() + " Timer: " + df.format(time) +"  ";
                         fileWriter.write(counterTime);
-                        System.out.println(counterTime);
+                        //System.out.println(counterTime);
                     }
 
                     /*
@@ -156,6 +169,7 @@ public class sendObjects implements Runnable {
                         fileWriter.write("Don't Send to Server! Wait Until a While!\n");
                         passenger.setPriority(passengerPriority);
                         passenger.setDelayedTrue();
+                        passenger.setRtt(rttOfMessage);
                         double delayTime = takeWaitingTime(passenger.getSize(),
                                 rttOfMessage,
                                 passengerPriority,
@@ -168,20 +182,7 @@ public class sendObjects implements Runnable {
 
                 } catch (IOException ex) {
                     System.out.println("Server connection closed!");
-                    try {
-                        clientAnalysis.printArr(fileWriter);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    try {
-                        fileWriter.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    Thread.currentThread().interrupt();
-                    return;
+                    clientAnalysisPrint(fileWriter);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(createObjects.class.getName()).log(Level.SEVERE, null, ex);
                     try {
@@ -192,12 +193,31 @@ public class sendObjects implements Runnable {
                 }
             }
         }
-       /* try {
+
+        try {
 
             clientSocket.close();
         } catch (IOException ex) {
             Logger.getLogger(sendObjects.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
+        }
+
+        clientAnalysisPrint(fileWriter);
+    }
+
+    private void clientAnalysisPrint(FileWriter fileWriter) {
+        try {
+            clientAnalysis.printArr(fileWriter);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Thread.currentThread().interrupt();
     }
 
 }

@@ -33,7 +33,7 @@ public class ClientSide {
         Socket clientSocket = new Socket("192.168.1.136", 6789);
         /*
         Qmin ve Qmax'ı buradan alsam direkt???
-
+        0.9 0.85 0.79 0.69
          */
 
         ObjectInputStream ois;
