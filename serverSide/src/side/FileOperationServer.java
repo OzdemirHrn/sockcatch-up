@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class FileOperations {
-    private static final String path = "C:\\Users\\muham\\Desktop\\OutputSensor\\";
+public class FileOperationServer {
+    private static final String path = "C:\\Users\\muham\\Desktop\\OutputSensor\\OutputSensor";
 
     public  FileWriter createInputfile(String fileName) {
 
