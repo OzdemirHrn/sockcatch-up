@@ -6,7 +6,6 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.text.DecimalFormat;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.DelayQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,7 +18,7 @@ import static side.DelayObject.takeWaitingTime;
 
 public class sendObjects implements Runnable {
 
-    final static Counter counter = new Counter();
+
     final static int limitOfMessage = 10000;
     private final String topic;
     private final int sendObjectSleep;
@@ -35,12 +34,13 @@ public class sendObjects implements Runnable {
     NashEq nashEq = new NashEq();
     boolean rttFirstCome = false;
 
-    public sendObjects(BlockingQueue<DelayObject> DQ,LinkedBlockingDeque<Message> outgoingMessage, Socket clientSocket, int sendObjectSleep, String topic) {
+    public sendObjects(BlockingQueue<DelayObject> DQ, LinkedBlockingDeque<Message> outgoingMessage, Socket clientSocket, int sendObjectSleep, String topic) {
         this.DQ = DQ;
         this.topic = topic;
         this.outgoingMessage = outgoingMessage;
         this.clientSocket = clientSocket;
         this.sendObjectSleep = sendObjectSleep;
+
     }
 
     @Override
@@ -54,7 +54,7 @@ public class sendObjects implements Runnable {
         FileWriter fileWriter = new FileOperations().createInputfile(topic);
 
 
-        while (!counter.isReachedToLimit(limitOfMessage)) {
+        while (!ClientSide.counter.isReachedToLimit(limitOfMessage)) {
 
             if (!outgoingMessage.isEmpty()) {
 
@@ -105,17 +105,17 @@ public class sendObjects implements Runnable {
                         rttFirstCome = true;
 
                         //timer
-                        counter.increment();
+                        ClientSide.counter.incrementTotalMessageCounter();
 
 
-                        clientAnalysis.publishersTimer(counter);
+                        clientAnalysis.publishersTimer(ClientSide.counter);
 
                         float son = System.nanoTime();
                         DecimalFormat df = new DecimalFormat("#.###");
                         double time = son - start1;
                         double time1 = time % 1000000;
                         time = (time - time1) / 1000000;
-                        String counterTime = "Counter: " + counter.getCounter() + " Timer: " + df.format(time) +"  ";
+                        String counterTime = "Counter: " + ClientSide.counter.getCounter() + " Timer: " + df.format(time) +"  ";
                         fileWriter.write(counterTime);
                         System.out.println(counterTime);
                     }
@@ -164,11 +164,15 @@ public class sendObjects implements Runnable {
         }
 
         clientAnalysisPrint(fileWriter);
+
     }
 
     private void clientAnalysisPrint(FileWriter fileWriter) {
         try {
             clientAnalysis.printArr(fileWriter);
+            fileWriter.write("Total Dropped Messages= "+ClientSide.counter.getDroppedMessagesAfterSeveralTrialAttempt()+"\n"+
+                    "Delayed Queue Size When Program Has Terminated= "+DQ.size());
+
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -13,6 +13,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class ClientSide {
 
     static int Qmin,Qmax;
+    final static Counter counter = new Counter();
     /*
     Gidecek mesajların beklediği Queue
     Thread Safe için Blocking Queue kullandım. Ama tekrar bakılabilir -----
@@ -32,7 +33,7 @@ public class ClientSide {
         Bu argument topic olarak görev yapıyor.
         Bu client sadece bu topice message yolluyor
         */
-        Socket clientSocket = new Socket("192.168.1.42", 6789);
+        Socket clientSocket = new Socket("192.168.1.136", 6789);
         /*
         Qmin ve Qmax'ı buradan alsam direkt???
         0.9 0.85 0.79 0.69
@@ -45,6 +46,7 @@ public class ClientSide {
         Qmin= Integer.parseInt(message.substring(0,2));
         Qmax=Integer.parseInt(message.substring(5,7));
         System.out.println(Qmin+"  "+Qmax);
+
 
         Runnable receivingQueueOcc = new QueueOccupancyReceiver(clientSocket);
         Thread threadReceivingQueueOcc = new Thread(receivingQueueOcc);

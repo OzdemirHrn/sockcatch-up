@@ -1,15 +1,10 @@
 package side;
 
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.text.DecimalFormat;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.DelayQueue;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static side.DelayObject.takeWaitingTime;
 
@@ -20,7 +15,6 @@ public class SendDelayedObject implements Runnable {
     private final String topic;
     private final Socket clientSocket;
     private final BlockingQueue<DelayObject> DQ;
-    final static Counter counter = new Counter();
     private String toFile = "";
 
     public SendDelayedObject(BlockingQueue<DelayObject> DQ, Socket clientSocket, int sendObjectSleep, String topic) {
@@ -29,6 +23,7 @@ public class SendDelayedObject implements Runnable {
         this.clientSocket = clientSocket;
         this.sendObjectSleep = sendObjectSleep;
         this.topic = topic;
+
     }
 
     ClientAnalysis clientAnalysis = new ClientAnalysis();
@@ -45,7 +40,7 @@ public class SendDelayedObject implements Runnable {
         double rttOfMessage = 0;
         double passengerPriority;
 
-        FileWriter fileWriter = new FileOperations().createInputfile("Delayed "+topic);
+        FileWriter fileWriter = new FileOperations().createInputfile("Delayed " + topic);
 
         while (true) {
             try {
@@ -63,8 +58,10 @@ public class SendDelayedObject implements Runnable {
                     delayedMessage.setPriority(1);
                 }
                 if (delayedMessage.getCounter() == 4) {
-                    fileWriter.write("dropped\n");
                     System.out.println("dropped");
+                    ClientSide.counter.incrementDroppedMessagesAfterSeveralTrialAttempts();
+                    fileWriter.write("dropped\n");
+
                 } else {
 
                     passengerPriority = delayedMessage.getPriority();
@@ -86,18 +83,18 @@ public class SendDelayedObject implements Runnable {
                         rttFirstCome = true;
 
                         //timer
-                        counter.increment();
+                        ClientSide.counter.incrementTotalMessageCounter();
 
-                        clientAnalysis.publishersTimer(counter);
+                        clientAnalysis.publishersTimer(ClientSide.counter);
 
                         float son = System.nanoTime();
                         DecimalFormat df = new DecimalFormat("#.###");
                         double time = son - start1;
                         double time1 = time % 1000000;
                         time = (time - time1) / 1000000;
-                        String counterTime = "Counter: " + counter.getCounter() + " Timer: " + df.format(time) + "  ";
+                        String counterTime = "Counter: " + ClientSide.counter.getCounter() + " Timer: " + df.format(time) + "  ";
                         fileWriter.write(counterTime);
-                        System.out.println("delayedobject"+counterTime);
+                        System.out.println("delayedobject" + counterTime);
                         fileWriter.write("gönderdim xd\n");
                         System.out.println("gönderdim xd");
                     } else {
