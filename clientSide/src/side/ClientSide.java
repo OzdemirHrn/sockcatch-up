@@ -3,6 +3,8 @@ package side;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.DelayQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 /**
@@ -24,13 +26,13 @@ public class ClientSide {
 
 
         LinkedBlockingDeque<Message> goingMessages = new LinkedBlockingDeque<>(capacityOfQueue);
-
+        BlockingQueue<DelayObject> DQ = new DelayQueue<>();
         /*
         Client side main methodundan  argument alıyor.
         Bu argument topic olarak görev yapıyor.
         Bu client sadece bu topice message yolluyor
         */
-        Socket clientSocket = new Socket("192.168.1.35", 6789);
+        Socket clientSocket = new Socket("192.168.1.42", 6789);
         /*
         Qmin ve Qmax'ı buradan alsam direkt???
 
@@ -59,13 +61,20 @@ public class ClientSide {
         /*
         Bu objectleri clientSocket'e gönderen Thread.
         */
-        Runnable sendingObjects = new sendObjects(goingMessages, clientSocket, sendObjectSleep, config.get(0));
+        Runnable sendingObjects = new sendObjects(DQ,goingMessages, clientSocket, sendObjectSleep, config.get(0));
         Thread threadSendingObjects = new Thread(sendingObjects);
         threadSendingObjects.start();
 
+        Runnable sendDelayedObjects = new SendDelayedObject(DQ , clientSocket, sendObjectSleep,config.get(0));
+        Thread threadSendDelayedObject = new Thread(sendDelayedObjects);
+        threadSendDelayedObject.start();
+
+
+        threadSendDelayedObject.join();
         threadCreatingObject.join();
         threadReceivingQueueOcc.join();
         threadSendingObjects.join();
+
 
         System.exit(1);
     }
