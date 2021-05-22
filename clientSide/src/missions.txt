@@ -1,15 +1,7 @@
-+++Mesajı göndermedi --> bekletiyor ->> aynı sensörün başka mesajı gönderilebilir mi ve bu mantıklı mı?
-Size= 0.5
-RTT= 0.0
-Priority= 2.6812531374104604E-12
-Award= 3.0
-Queue= 0.0
-( -0.49999999999195627,-0.49999999999195627 )   ( -0.5,0.49999999999195627 )   ( 0.0,0.0 )
-
-+++Clientleri tek tek runlayınca ilk sensorün rtt hep 0, diğerlerinin hep 1 oluyor.
-
-+++T̶x̶t̶'̶d̶e̶n̶ ̶i̶n̶p̶u̶t̶l̶a̶r̶ı̶ ̶o̶k̶u̶s̶u̶n̶.̶.̶.̶
-
 +++Size şuan default 0.5
 
-+++runConfigurations içine tüm sensörlerin columnları topicleri eklenicek
++++PriorityKorçak NaN dönderiyor.
+
++++ClientSide gönderme sayısını kısıtlicak. Serverside yerine
+
+

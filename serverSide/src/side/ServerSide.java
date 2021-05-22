@@ -14,14 +14,14 @@ import java.util.concurrent.LinkedBlockingQueue;
  *
  * @author harunOzdemir
  */
-
+// merhaba
 public class ServerSide {
 
     static final int droppedTotal = 0;
-    private static ExecutorService service = Executors.newFixedThreadPool(20);
+    private static ExecutorService service = Executors.newFixedThreadPool(100);
     private static Queue<WelcomeMessages> allClients = new LinkedList();
     static float Qmin=20,Qmax=80;
-    // q değeri
+
     /*
     Bu queue gelen objectleri tutuyor. Daha sonra bu objectleri bir thread subscriber gibi ekrana bastıracak
     */

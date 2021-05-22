@@ -3,6 +3,9 @@ package side;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.DelayQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 /**
  * @author harunOzdemir
@@ -14,7 +17,7 @@ public class ClientSide {
     Gidecek mesajların beklediği Queue
     Thread Safe için Blocking Queue kullandım. Ama tekrar bakılabilir -----
     */
-    public static void main(List<String> config) throws Exception {
+    public void main(List<String> config) throws Exception {
 
         int createObjectSleep = Integer.parseInt(config.get(1));
         int sendObjectSleep = Integer.parseInt(config.get(2));
@@ -22,14 +25,14 @@ public class ClientSide {
         int datasetRow = Integer.parseInt(config.get(4));
 
 
-        LinkedBlockingQueue<Message> goingMessages = new LinkedBlockingQueue<>(capacityOfQueue);
-
+        LinkedBlockingDeque<Message> goingMessages = new LinkedBlockingDeque<>(capacityOfQueue);
+        BlockingQueue<DelayObject> DQ = new DelayQueue<>();
         /*
         Client side main methodundan  argument alıyor.
         Bu argument topic olarak görev yapıyor.
         Bu client sadece bu topice message yolluyor
         */
-        Socket clientSocket = new Socket("192.168.1.136", 6789);
+        Socket clientSocket = new Socket("192.168.1.42", 6789);
         /*
         Qmin ve Qmax'ı buradan alsam direkt???
 
@@ -58,10 +61,22 @@ public class ClientSide {
         /*
         Bu objectleri clientSocket'e gönderen Thread.
         */
-        Runnable sendingObjects = new sendObjects(goingMessages, clientSocket, sendObjectSleep);
+        Runnable sendingObjects = new sendObjects(DQ,goingMessages, clientSocket, sendObjectSleep, config.get(0));
         Thread threadSendingObjects = new Thread(sendingObjects);
         threadSendingObjects.start();
 
+        Runnable sendDelayedObjects = new SendDelayedObject(DQ , clientSocket, sendObjectSleep,config.get(0));
+        Thread threadSendDelayedObject = new Thread(sendDelayedObjects);
+        threadSendDelayedObject.start();
+
+
+        threadSendDelayedObject.join();
+        threadCreatingObject.join();
+        threadReceivingQueueOcc.join();
+        threadSendingObjects.join();
+
+
+        System.exit(1);
     }
 
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
 public class MultipleClients {
 
 
@@ -29,7 +30,8 @@ class RunSensorsSeparately implements Runnable {
     @Override
     public void run() {
         try {
-            ClientSide.main(sensorConfig);
+
+            new ClientSide().main(sensorConfig);
         } catch (Exception ex) {
             Logger.getLogger(RunSensorsSeparately.class.getName()).log(Level.SEVERE, null, ex);
         }
