@@ -46,7 +46,7 @@ public class SendObjects implements Runnable {
     public void run() {
 
         final float start1 = System.nanoTime();
-        IPriority priority = new PriorityKorcak();
+        IPriority priority = new Priority();
         double rttOfMessage = 0;
         double passengerPriority;
 
