@@ -6,7 +6,6 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.text.DecimalFormat;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.DelayQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,9 +16,9 @@ import static side.DelayObject.takeWaitingTime;
  * Objectleri Server'a gönderen Thread ve onun Runnable classı
  */
 
-public class sendObjects implements Runnable {
+public class SendObjects implements Runnable {
 
-    final static Counter counter = new Counter();
+
     final static int limitOfMessage = 10000;
     private final String topic;
     private final int sendObjectSleep;
@@ -30,12 +29,12 @@ public class sendObjects implements Runnable {
     ClientAnalysis clientAnalysis = new ClientAnalysis();
     BlockingQueue<DelayObject> DQ;
 
-    private final double award = 3;
+    private final double award = 4;
     Rtt rtt = new Rtt(0.05);
     NashEq nashEq = new NashEq();
     boolean rttFirstCome = false;
 
-    public sendObjects(BlockingQueue<DelayObject> DQ,LinkedBlockingDeque<Message> outgoingMessage, Socket clientSocket, int sendObjectSleep, String topic) {
+    public SendObjects(BlockingQueue<DelayObject> DQ, LinkedBlockingDeque<Message> outgoingMessage, Socket clientSocket, int sendObjectSleep, String topic) {
         this.DQ = DQ;
         this.topic = topic;
         this.outgoingMessage = outgoingMessage;
@@ -54,14 +53,14 @@ public class sendObjects implements Runnable {
         FileWriter fileWriter = new FileOperations().createInputfile(topic);
 
 
-        while (!counter.isReachedToLimit(limitOfMessage)) {
+        while (!MultipleClients.counter.isReachedToLimit(limitOfMessage)) {
 
             if (!outgoingMessage.isEmpty()) {
 
                 ObjectOutputStream outToServer;
                 try {
                     int randomSending = randomVariable.getRandomVariable();
-                    Thread.sleep(400);
+                    Thread.sleep(200);
                     //outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
                     //System.out.println(outgoingMessage.peek().getMessage()+"  "+outgoingMessage.peek().getTopic()+"  Queue size is "+outgoingMessage.size());
 
@@ -85,9 +84,9 @@ public class sendObjects implements Runnable {
                         passenger.setRtt(rttOfMessage);
 
                         outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
-
+                        MultipleClients.counter.incrementSendMessageInFirstAttempt();
                         System.out.println();
-                        passenger.setCounter(passenger.getCounter()+1);
+                        passenger.setCounter(passenger.getCounter() + 1);
 
                         //Son gönderdiğim mesaj <-- First Consistent Data
                         priority.setFirstConsistentData(passenger.getMessage());
@@ -97,7 +96,7 @@ public class sendObjects implements Runnable {
 
                         long sampleRtt = (System.nanoTime() - rttTimeStart);
 
-                        if (rttFirstCome){
+                        if (rttFirstCome) {
                             rttOfMessage = rtt.calculateRTT(sampleRtt, rtt.calculateEstimatedRtt(sampleRtt));
                         }
 
@@ -105,17 +104,17 @@ public class sendObjects implements Runnable {
                         rttFirstCome = true;
 
                         //timer
-                        counter.increment();
+                        MultipleClients.counter.incrementTotalMessageCounter();
 
 
-                        clientAnalysis.publishersTimer(counter);
+                        clientAnalysis.publishersTimer(MultipleClients.counter);
 
                         float son = System.nanoTime();
                         DecimalFormat df = new DecimalFormat("#.###");
                         double time = son - start1;
                         double time1 = time % 1000000;
                         time = (time - time1) / 1000000;
-                        String counterTime = "Counter: " + counter.getCounter() + " Timer: " + df.format(time) +"  ";
+                        String counterTime = "Counter: " + MultipleClients.counter.getCounter() + " Timer: " + df.format(time) + "  ";
                         fileWriter.write(counterTime);
                         System.out.println(counterTime);
                     }
@@ -145,6 +144,7 @@ public class sendObjects implements Runnable {
                 } catch (IOException ex) {
                     System.out.println("Server connection closed!");
                     clientAnalysisPrint(fileWriter);
+                    break;
                 } catch (InterruptedException ex) {
                     Logger.getLogger(createObjects.class.getName()).log(Level.SEVERE, null, ex);
                     try {
@@ -160,15 +160,23 @@ public class sendObjects implements Runnable {
 
             clientSocket.close();
         } catch (IOException ex) {
-            Logger.getLogger(sendObjects.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SendObjects.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        clientAnalysisPrint(fileWriter);
     }
 
     private void clientAnalysisPrint(FileWriter fileWriter) {
         try {
             clientAnalysis.printArr(fileWriter);
+            FileWriter fileWriterCounter = new FileOperations().createInputfile("Total & Dropped Message Counter");
+            fileWriterCounter.write("Total Dropped Messages: " + MultipleClients.counter.getDroppedMessagesAfterSeveralTrialAttempt() + "\n" +
+                    "Has Send in First Attempt: " + MultipleClients.counter.getSendMessageInFirstAttempt() + "\n" +
+                    "Has Send in Second Attempt: " + MultipleClients.counter.getSendMessageInSecondAttempt() + "\n" +
+                    "Has Send in Third Attempt: " + MultipleClients.counter.getSendMessageInThirdAttempt() + "\n" +
+                    "Has Send in Fourth Attempt: " + MultipleClients.counter.getSendMessageInFourthAttempt()
+
+            );
+            fileWriterCounter.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -2,11 +2,14 @@ package side;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
 public class MultipleClients {
+
+    public static Counter counter = new Counter();
 
 
     public static void main(String... args) throws IOException {

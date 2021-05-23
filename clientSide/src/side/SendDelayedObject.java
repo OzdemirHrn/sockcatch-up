@@ -20,7 +20,6 @@ public class SendDelayedObject implements Runnable {
     private final String topic;
     private final Socket clientSocket;
     private final BlockingQueue<DelayObject> DQ;
-    final static Counter counter = new Counter();
     private String toFile = "";
 
     public SendDelayedObject(BlockingQueue<DelayObject> DQ, Socket clientSocket, int sendObjectSleep, String topic) {
@@ -65,6 +64,7 @@ public class SendDelayedObject implements Runnable {
                 if (delayedMessage.getCounter() == 4) {
                     fileWriter.write("dropped\n");
                     System.out.println("dropped");
+                    MultipleClients.counter.incrementDroppedMessagesAfterSeveralTrialAttempts();
                 } else {
 
                     passengerPriority = delayedMessage.getPriority();
@@ -77,6 +77,14 @@ public class SendDelayedObject implements Runnable {
                             QueueOccupancyReceiver.queueOccupancy,
                             fileWriter)) {
 
+                        switch (delayedMessage.getCounter()) {
+                            case 1 -> MultipleClients.counter.incrementSendMessageInSecondAttempt();
+                            case 2 -> MultipleClients.counter.incrementSendMessageInThirdAttempt();
+                            case 3 -> MultipleClients.counter.incrementSendMessageInFourthAttempt();
+                            default -> System.err.println("Illegal Message Delayed Counter Value");
+                        }
+
+
                         outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
                         outToServer.writeObject(delayedMessage);
 
@@ -86,16 +94,16 @@ public class SendDelayedObject implements Runnable {
                         rttFirstCome = true;
 
                         //timer
-                        counter.increment();
+                        MultipleClients.counter.incrementTotalMessageCounter();
 
-                        clientAnalysis.publishersTimer(counter);
+                        clientAnalysis.publishersTimer(MultipleClients.counter);
 
                         float son = System.nanoTime();
                         DecimalFormat df = new DecimalFormat("#.###");
                         double time = son - start1;
                         double time1 = time % 1000000;
                         time = (time - time1) / 1000000;
-                        String counterTime = "Counter: " + counter.getCounter() + " Timer: " + df.format(time) + "  ";
+                        String counterTime = "Counter: " + MultipleClients.counter.getCounter() + " Timer: " + df.format(time) + "  ";
                         fileWriter.write(counterTime);
                         System.out.println("delayedobject"+counterTime);
                         fileWriter.write("gönderdim xd\n");

@@ -47,12 +47,8 @@ public class NashEq {
         System.out.println(nashStr);
 
 
-        if (nashArray[0][0] >= nashArray[0][2] && nashArray[0][0] > 0) {
-            if (nashArray[0][1] > 0) { // zaten server side -lisini veriyor. drop ve accept tam tersi
-                return true;
-            } else if (nashArray[0][1] < 0) {
-                return false;
-            }
+        if (nashArray[0][1] > 0) {
+            return true;
         }
 
         return false;

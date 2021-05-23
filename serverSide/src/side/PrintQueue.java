@@ -2,6 +2,7 @@ package side;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.text.DecimalFormat;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -17,20 +18,20 @@ public class PrintQueue implements Runnable {
     private static float start = System.nanoTime();
     private static float end;
     private int printSleepTime;
+    private boolean isTerminated = false;
+    private ServerSocket serverSocket;
     ServerAnalysis serverAnalysis = new ServerAnalysis();
     ServerOperation serverOperation = new ServerOperation();
 
 
-
-
     private LinkedBlockingQueue<Message> incomingMessage;
 
-    public PrintQueue(LinkedBlockingQueue<Message> incomingMessage, int printSleepTime, Queue<WelcomeMessages> allClients) {
+    public PrintQueue(LinkedBlockingQueue<Message> incomingMessage, int printSleepTime, Queue<WelcomeMessages> allClients, ServerSocket welcomeSocket) {
         this.allClients = allClients;
         this.incomingMessage = incomingMessage;
         this.printSleepTime = printSleepTime;
+        this.serverSocket = welcomeSocket;
     }
-
 
 
     @Override
@@ -61,20 +62,30 @@ public class PrintQueue implements Runnable {
                 incomingMessage.poll();
             }
 
-            if (counter.getCounter() == serverAnalysis.limitOfCounter) {
-                int totalDropped = 0;
-                try {
-                    serverAnalysis.printArr();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                while (!allClients.isEmpty()) {
-                    System.out.println("Dropped Messages" + allClients.peek().dropped);
-                    totalDropped += allClients.poll().dropped;
-                }
+            if (counter.getCounter() >= serverAnalysis.limitOfCounter) {
+                if (!isTerminated) {
+                    int totalDropped = 0;
+                    try {
+                        serverAnalysis.printArr();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    while (!allClients.isEmpty()) {
+                        System.out.println("Dropped Messages" + allClients.peek().dropped);
+                        totalDropped += allClients.poll().dropped;
+                    }
 
-                System.out.println("Total Number of Dropped Messages: " + totalDropped);
-                System.exit(1);
+                    System.out.println("Total Number of Dropped Messages: " + totalDropped);
+                }
+//                try {
+//                    serverSocket.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+                isTerminated = true;
+                System.exit(0);
+//                if (incomingMessage.size() == 0)
+
             }
         }
 

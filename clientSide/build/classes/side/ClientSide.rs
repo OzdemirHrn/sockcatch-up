@@ -1,5 +1,5 @@
 side.ServerSide
-side.sendObjects
+side.SendObjects
 side.PrintQueue
 side.createObjects
 side.ClientSide

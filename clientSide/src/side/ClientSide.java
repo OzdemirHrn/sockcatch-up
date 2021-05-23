@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.DelayQueue;
 import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.LinkedBlockingQueue;
+
 /**
  * @author harunOzdemir
  */
@@ -61,7 +61,7 @@ public class ClientSide {
         /*
         Bu objectleri clientSocket'e gönderen Thread.
         */
-        Runnable sendingObjects = new sendObjects(DQ,goingMessages, clientSocket, sendObjectSleep, config.get(0));
+        Runnable sendingObjects = new SendObjects(DQ,goingMessages, clientSocket, sendObjectSleep, config.get(0));
         Thread threadSendingObjects = new Thread(sendingObjects);
         threadSendingObjects.start();
 

@@ -34,7 +34,7 @@ public class ServerSide {
         Welcoming socket with 6789 port
          */
         ServerSocket welcomeSocket = new ServerSocket(6789);
-        Runnable printObjects = new PrintQueue(comingMessages, printSleepTime, allClients);
+        Runnable printObjects = new PrintQueue(comingMessages, printSleepTime, allClients, welcomeSocket);
         /*Bu thread queuedaki alınan objeleri sanki subscriber gibi
         ekrana bastırıyor
          */
