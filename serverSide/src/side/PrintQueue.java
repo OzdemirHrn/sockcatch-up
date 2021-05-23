@@ -52,7 +52,11 @@ public class PrintQueue implements Runnable {
 
                 serverAnalysis.publishersTimer(incomingMessage.size(), counter, start, allClients);
 
-                serverOperation.operation(incomingMessage.peek().getTopic(), incomingMessage.peek().getOperation());
+                try {
+                    serverOperation.operation(incomingMessage.peek().getTopic(), incomingMessage.peek().getOperation());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
                 incomingMessage.poll();
             }

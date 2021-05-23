@@ -56,7 +56,7 @@ public class sendObjects implements Runnable {
                 try {
                     int randomSending = randomVariable.getRandomVariable();
 
-                    Thread.sleep(sendObjectSleep + randomSending);
+                    Thread.sleep(200);
 
                     Message passenger = outgoingMessage.peek();
 
