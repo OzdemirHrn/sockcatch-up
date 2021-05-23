@@ -11,6 +11,7 @@ public class Counter {
     private AtomicInteger sendMessageInSecondAttempt = new AtomicInteger(0);
     private AtomicInteger sendMessageInThirdAttempt = new AtomicInteger(0);
     private AtomicInteger sendMessageInFourthAttempt = new AtomicInteger(0);
+    private AtomicInteger sizeOfDelayedQueue = new AtomicInteger(0);
 
 
     private int getCounter;
@@ -69,4 +70,18 @@ public class Counter {
     public int getSendMessageInFourthAttempt(){
         return sendMessageInFourthAttempt.get();
     }
+
+    public void incrementsizeOfDelayedQueue(){
+        sizeOfDelayedQueue.incrementAndGet();
+    }
+
+    public void decrementtsizeOfDelayedQueue(){
+        sizeOfDelayedQueue.decrementAndGet();
+    }
+
+    public int getsizeOfDelayedQueue(){
+        return sizeOfDelayedQueue.get();
+    }
+
+
 }

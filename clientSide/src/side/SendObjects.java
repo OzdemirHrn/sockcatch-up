@@ -137,6 +137,7 @@ public class SendObjects implements Runnable {
                                 QueueOccupancyReceiver.queueOccupancy);
                         passenger.setCounter(passenger.getCounter() + 1);
                         DelayObject delayObject = new DelayObject(outgoingMessage.poll(), delayTime);
+                        MultipleClients.counter.incrementsizeOfDelayedQueue();
                         DQ.add(delayObject);
 
                     }
@@ -168,12 +169,14 @@ public class SendObjects implements Runnable {
     private void clientAnalysisPrint(FileWriter fileWriter) {
         try {
             clientAnalysis.printArr(fileWriter);
+            fileWriter.write("DQ Size= "+DQ.size());
             FileWriter fileWriterCounter = new FileOperations().createInputfile("Total & Dropped Message Counter");
             fileWriterCounter.write("Total Dropped Messages: " + MultipleClients.counter.getDroppedMessagesAfterSeveralTrialAttempt() + "\n" +
                     "Has Send in First Attempt: " + MultipleClients.counter.getSendMessageInFirstAttempt() + "\n" +
                     "Has Send in Second Attempt: " + MultipleClients.counter.getSendMessageInSecondAttempt() + "\n" +
                     "Has Send in Third Attempt: " + MultipleClients.counter.getSendMessageInThirdAttempt() + "\n" +
-                    "Has Send in Fourth Attempt: " + MultipleClients.counter.getSendMessageInFourthAttempt()
+                    "Has Send in Fourth Attempt: " + MultipleClients.counter.getSendMessageInFourthAttempt()+ "\n"+
+                    "Delayed Queue Size After Terminated The Program: "+ MultipleClients.counter.getsizeOfDelayedQueue()
 
             );
             fileWriterCounter.close();

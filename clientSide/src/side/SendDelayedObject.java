@@ -84,7 +84,7 @@ public class SendDelayedObject implements Runnable {
                             default -> System.err.println("Illegal Message Delayed Counter Value");
                         }
 
-
+                        MultipleClients.counter.decrementtsizeOfDelayedQueue();
                         outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
                         outToServer.writeObject(delayedMessage);
 
