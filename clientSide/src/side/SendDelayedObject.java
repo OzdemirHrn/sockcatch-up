@@ -61,7 +61,7 @@ public class SendDelayedObject implements Runnable {
                 } else {
                     delayedMessage.setPriority(1);
                 }
-                if (delayedMessage.getCounter() == 4) {
+                if (delayedMessage.getCounter() == 3) {
                     fileWriter.write("dropped\n");
                     System.out.println("dropped");
                     MultipleClients.counter.incrementDroppedMessagesAfterSeveralTrialAttempts();

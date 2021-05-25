@@ -23,6 +23,7 @@ public class ClientSide {
         int sendObjectSleep = Integer.parseInt(config.get(2));
         int capacityOfQueue = Integer.parseInt(config.get(3));
         int datasetRow = Integer.parseInt(config.get(4));
+        int sizeOfSensor = Integer.parseInt(config.get(5));
 
 
         LinkedBlockingDeque<Message> goingMessages = new LinkedBlockingDeque<>(capacityOfQueue);
@@ -32,7 +33,7 @@ public class ClientSide {
         Bu argument topic olarak görev yapıyor.
         Bu client sadece bu topice message yolluyor
         */
-        Socket clientSocket = new Socket("192.168.1.42", 6789);
+        Socket clientSocket = new Socket("192.168.1.39", 6789);
         /*
         Qmin ve Qmax'ı buradan alsam direkt???
         0.9 0.85 0.79 0.69
@@ -54,7 +55,7 @@ public class ClientSide {
         Message sınıfından topic ve random value argumentleriyle
         objectler oluşturan Thread.
         */
-        Runnable creatingObject = new createObjects(goingMessages, config.get(0), createObjectSleep, capacityOfQueue,datasetRow);
+        Runnable creatingObject = new createObjects(goingMessages, config.get(0), createObjectSleep, capacityOfQueue,datasetRow,sizeOfSensor);
         Thread threadCreatingObject = new Thread(creatingObject);
         threadCreatingObject.start();
 

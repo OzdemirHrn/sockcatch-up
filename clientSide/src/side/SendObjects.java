@@ -60,7 +60,7 @@ public class SendObjects implements Runnable {
                 ObjectOutputStream outToServer;
                 try {
                     int randomSending = randomVariable.getRandomVariable();
-                    Thread.sleep(200);
+                    Thread.sleep(400);
                     //outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
                     //System.out.println(outgoingMessage.peek().getMessage()+"  "+outgoingMessage.peek().getTopic()+"  Queue size is "+outgoingMessage.size());
 
@@ -69,6 +69,9 @@ public class SendObjects implements Runnable {
                     Message passenger = outgoingMessage.peek();
                     passengerPriority = priority.priorityAssigner(passenger.getMessage());
                     passenger.setPriority(passengerPriority);
+
+                    //size set
+
 
                     //timer
                     long rttTimeStart = System.nanoTime();

@@ -54,7 +54,7 @@ public class PrintQueue implements Runnable {
                 serverAnalysis.publishersTimer(incomingMessage.size(), counter, start, allClients);
 
                 try {
-                    serverOperation.operation(incomingMessage.peek().getTopic(), incomingMessage.peek().getOperation());
+                    serverOperation.operation(incomingMessage.peek().getTopic(), incomingMessage.peek().getOperation(),incomingMessage.peek().getSize());
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
