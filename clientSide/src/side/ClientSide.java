@@ -24,6 +24,7 @@ public class ClientSide {
         int sendObjectSleep = Integer.parseInt(config.get(2));
         int capacityOfQueue = Integer.parseInt(config.get(3));
         int datasetRow = Integer.parseInt(config.get(4));
+        int sizeOfSensor = Integer.parseInt(config.get(5));
 
 
         LinkedBlockingDeque<Message> goingMessages = new LinkedBlockingDeque<>(capacityOfQueue);
@@ -55,7 +56,7 @@ public class ClientSide {
         Message sınıfından topic ve random value argumentleriyle
         objectler oluşturan Thread.
         */
-        Runnable creatingObject = new createObjects(goingMessages, config.get(0), createObjectSleep, capacityOfQueue, datasetRow);
+        Runnable creatingObject = new createObjects(goingMessages, config.get(0), createObjectSleep, capacityOfQueue,datasetRow,sizeOfSensor);
         Thread threadCreatingObject = new Thread(creatingObject);
         threadCreatingObject.start();
 

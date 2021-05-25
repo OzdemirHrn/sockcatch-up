@@ -148,10 +148,6 @@ public class SendObjects implements Runnable {
 
                 } catch (IOException ex) {
                     System.out.println("Server connection closed!");
-
-
-
-
                     clientAnalysisPrint(fileWriter);
                     break;
                 } catch (InterruptedException ex) {

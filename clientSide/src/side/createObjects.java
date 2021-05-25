@@ -26,12 +26,13 @@ public class createObjects implements Runnable {
     private int count;
     static final Object o=new Object();
 
-    public createObjects(LinkedBlockingDeque<Message> outgoingMessage, String topic, int createObjectSleep, int capacityOfQueue, int count) {
+    public createObjects(LinkedBlockingDeque<Message> outgoingMessage, String topic, int createObjectSleep, int capacityOfQueue, int count,float sizeOfSensor) {
         this.outgoingMessage = outgoingMessage;
         this.topic = topic;
         this.createObjectSleep = createObjectSleep;
         this.capacityOfQueue = capacityOfQueue;
         this.count = count;
+        this.size = (float) (sizeOfSensor*0.1+Math.random()*0.1);
     }
 
     @Override

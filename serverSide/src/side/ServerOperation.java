@@ -2,12 +2,11 @@ package side;
 
 public class ServerOperation {
 
+    public void operation(String messageDeviceInfo, int messageOperation,float messageSize) throws InterruptedException {
 
+        Thread.sleep((long) (messageSize*100));
 
-
-
-    public void operation(String messageDeviceInfo, int messageOperation) throws InterruptedException {
-
+        /*
         if (messageOperation > 4000) { //7m
             Thread.sleep(20);
 
@@ -16,14 +15,12 @@ public class ServerOperation {
 
         } else if (messageOperation > 2000) {
 
-
-
         } else if (messageOperation > 1000) { //70m
             Thread.sleep(100);
 
         } else {
             System.out.println("case:else buraya girmememiz lazım");
         }
-
+*/
     }
 }
