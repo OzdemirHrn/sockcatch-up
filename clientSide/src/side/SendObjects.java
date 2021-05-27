@@ -19,7 +19,7 @@ import static side.DelayObject.takeWaitingTime;
 public class SendObjects implements Runnable {
 
 
-    final static int limitOfMessage = 10000;
+    final static int limitOfMessage = 1100;
     private final String topic;
     private final int sendObjectSleep;
     private LinkedBlockingDeque<Message> outgoingMessage;
@@ -46,7 +46,7 @@ public class SendObjects implements Runnable {
     public void run() {
 
         final float start1 = System.nanoTime();
-        IPriority priority = new PriorityKorcak();
+        IPriority priority = new Priority();
         double rttOfMessage = 0;
         double passengerPriority;
 
@@ -69,6 +69,7 @@ public class SendObjects implements Runnable {
                     Message passenger = outgoingMessage.peek();
                     passengerPriority = priority.priorityAssigner(passenger.getMessage());
                     passenger.setPriority(passengerPriority);
+                    passenger.setInitialPriorityIfDelayed(passengerPriority);
 
                     //timer
                     long rttTimeStart = System.nanoTime();
@@ -82,9 +83,10 @@ public class SendObjects implements Runnable {
                             fileWriter)) {
 
                         passenger.setRtt(rttOfMessage);
-
+                        //priority.setCounter(1);
                         outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
                         MultipleClients.counter.incrementSendMessageInFirstAttempt();
+                        MultipleClients.delayedMessagesPriority.get(0).add(passengerPriority);
                         System.out.println();
                         passenger.setCounter(passenger.getCounter() + 1);
 
@@ -126,6 +128,7 @@ public class SendObjects implements Runnable {
                     else {
                         System.out.println("Don't Send to Server! Wait Until a While!");
                         fileWriter.write("Don't Send to Server! Wait Until a While!\n");
+                        //priority.setCounter(priority.getCounter()+1);
                         passenger.setPriority(passengerPriority);
                         passenger.setDelayedTrue();
                         passenger.setRtt(rttOfMessage);
@@ -144,6 +147,10 @@ public class SendObjects implements Runnable {
 
                 } catch (IOException ex) {
                     System.out.println("Server connection closed!");
+
+
+
+
                     clientAnalysisPrint(fileWriter);
                     break;
                 } catch (InterruptedException ex) {
@@ -164,10 +171,13 @@ public class SendObjects implements Runnable {
             Logger.getLogger(SendObjects.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+        Thread.currentThread().interrupt();
     }
 
     private void clientAnalysisPrint(FileWriter fileWriter) {
+
         try {
+
             clientAnalysis.printArr(fileWriter);
             fileWriter.write("DQ Size= "+DQ.size());
             FileWriter fileWriterCounter = new FileOperations().createInputfile("Total & Dropped Message Counter");

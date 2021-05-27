@@ -6,6 +6,7 @@ public class PriorityKorcak implements IPriority {
 
     private double firstConsistentData = 0;
     private double priority = 1;
+
     private int counter = 1;
 
     public double priorityAssigner(float data) {
@@ -13,17 +14,17 @@ public class PriorityKorcak implements IPriority {
         double percentageDifference = calculateDifference(data, firstConsistentData);
         if (percentageDifference >= 1) {
             priority = 1;
-            firstConsistentData = data;
+            //firstConsistentData = data;
             //System.out.println("Priority= "+Double.parseDouble(df.format(priority).replaceAll(",","."))+" Counter= "+counter);
             counter = 1;
         } else {
-            priority = 1 / (10 * (1 - percentageDifference) - counter);
+            priority = 1 / (21 * (1 - percentageDifference) - counter);
 
             System.out.println("priority=" + priority + " counter= " + counter);
 
             if (priority >= 1 || priority < 0) {
                 priority = 1;
-                firstConsistentData = data;
+                //firstConsistentData = data;
                 //System.out.println("Priority= "+Double.parseDouble(df.format(priority).replaceAll(",","."))+" Counter= "+counter);
                 counter = 0;
             }
@@ -78,4 +79,13 @@ public class PriorityKorcak implements IPriority {
     public void setFirstConsistentData(double firstConsistentData) {
         this.firstConsistentData = firstConsistentData;
     }
+
+    public int getCounter() {
+        return counter;
+    }
+
+    public void setCounter(int counter) {
+        this.counter = counter;
+    }
+
 }

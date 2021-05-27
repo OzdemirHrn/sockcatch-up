@@ -14,8 +14,17 @@ class Message implements Serializable {
     private float size;
     private boolean delayed = false;
     private double priority;
+    private double initialPriorityIfDelayed;
     private int counter = 0;
     private double rtt = 0;
+
+    public double getInitialPriorityIfDelayed() {
+        return initialPriorityIfDelayed;
+    }
+
+    public void setInitialPriorityIfDelayed(double initialPriorityIfDelayed) {
+        this.initialPriorityIfDelayed = initialPriorityIfDelayed;
+    }
 
     public double getRtt() {
         return rtt;

@@ -44,12 +44,12 @@ class DelayObject implements Delayed {
 
         if (x < 0 && y < 0) {
             if (Math.abs(x) > Math.abs(y)) {
-                waitingTime = x * award * 10000;
+                waitingTime = x * award * 1000;
             } else {
-                waitingTime = y * award * 10000;
+                waitingTime = y * award * 1000;
             }
         } else {
-            waitingTime = Math.min(x, y) * award * 10000;
+            waitingTime = Math.min(x, y) * award * 1000;
         }
         return Math.abs(waitingTime);
     }

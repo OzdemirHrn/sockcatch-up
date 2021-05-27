@@ -12,10 +12,10 @@ public class Counter {
     private AtomicInteger sendMessageInThirdAttempt = new AtomicInteger(0);
     private AtomicInteger sendMessageInFourthAttempt = new AtomicInteger(0);
     private AtomicInteger sizeOfDelayedQueue = new AtomicInteger(0);
+    private AtomicInteger justOnceHistogram = new AtomicInteger(0);
 
 
     private int getCounter;
-
 
 
     public int incrementTotalMessageCounter() {
@@ -27,61 +27,64 @@ public class Counter {
         return c.get();
     }
 
-    public boolean isReachedToLimit(int limitMessage){
+    public boolean isReachedToLimit(int limitMessage) {
         return getCounter > limitMessage;
     }
 
-    public void incrementDroppedMessagesAfterSeveralTrialAttempts(){
+    public void incrementDroppedMessagesAfterSeveralAttempts() {
         droppedMessagesAfterSeveralTrialAttempts.incrementAndGet();
     }
 
-    public int getDroppedMessagesAfterSeveralTrialAttempt(){
+    public int getDroppedMessagesAfterSeveralTrialAttempt() {
         return droppedMessagesAfterSeveralTrialAttempts.get();
     }
 
-    public void incrementSendMessageInFirstAttempt(){
+    public void incrementSendMessageInFirstAttempt() {
         sendMessageInFirstAttempt.incrementAndGet();
     }
 
-    public int getSendMessageInFirstAttempt(){
+    public int getSendMessageInFirstAttempt() {
         return sendMessageInFirstAttempt.get();
     }
 
-    public void incrementSendMessageInSecondAttempt(){
+    public void incrementSendMessageInSecondAttempt() {
         sendMessageInSecondAttempt.incrementAndGet();
     }
 
-    public int getSendMessageInSecondAttempt(){
+    public int getSendMessageInSecondAttempt() {
         return sendMessageInSecondAttempt.get();
     }
 
-    public void incrementSendMessageInThirdAttempt(){
+    public void incrementSendMessageInThirdAttempt() {
         sendMessageInThirdAttempt.incrementAndGet();
     }
 
-    public int getSendMessageInThirdAttempt(){
+    public int getSendMessageInThirdAttempt() {
         return sendMessageInThirdAttempt.get();
     }
 
-    public void incrementSendMessageInFourthAttempt(){
+    public void incrementSendMessageInFourthAttempt() {
         sendMessageInFourthAttempt.incrementAndGet();
     }
 
-    public int getSendMessageInFourthAttempt(){
+    public int getSendMessageInFourthAttempt() {
         return sendMessageInFourthAttempt.get();
     }
 
-    public void incrementsizeOfDelayedQueue(){
+    public void incrementsizeOfDelayedQueue() {
         sizeOfDelayedQueue.incrementAndGet();
     }
 
-    public void decrementtsizeOfDelayedQueue(){
+    public void decrementtsizeOfDelayedQueue() {
         sizeOfDelayedQueue.decrementAndGet();
     }
 
-    public int getsizeOfDelayedQueue(){
+    public int getsizeOfDelayedQueue() {
         return sizeOfDelayedQueue.get();
     }
 
+    public int getAndIncrementHist() {
+        return justOnceHistogram.getAndIncrement();
+    }
 
 }

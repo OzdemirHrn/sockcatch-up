@@ -12,7 +12,8 @@ import java.util.concurrent.LinkedBlockingDeque;
  */
 public class ClientSide {
 
-    static int Qmin,Qmax;
+    static int Qmin, Qmax;
+
     /*
     Gidecek mesajların beklediği Queue
     Thread Safe için Blocking Queue kullandım. Ama tekrar bakılabilir -----
@@ -36,46 +37,44 @@ public class ClientSide {
         /*
         Qmin ve Qmax'ı buradan alsam direkt???
         0.9 0.85 0.79 0.69
-         */
+        */
 
         ObjectInputStream ois;
 
         ois = new ObjectInputStream(clientSocket.getInputStream());
         String message = (String) ois.readObject();
-        Qmin= Integer.parseInt(message.substring(0,2));
-        Qmax=Integer.parseInt(message.substring(5,7));
-        System.out.println(Qmin+"  "+Qmax);
+        Qmin = Integer.parseInt(message.substring(0, 2));
+        Qmax = Integer.parseInt(message.substring(5, 7));
+        System.out.println(Qmin + "  " + Qmax);
 
         Runnable receivingQueueOcc = new QueueOccupancyReceiver(clientSocket);
         Thread threadReceivingQueueOcc = new Thread(receivingQueueOcc);
         threadReceivingQueueOcc.start();
 
-       /*
+        /*
         Message sınıfından topic ve random value argumentleriyle
         objectler oluşturan Thread.
         */
-        Runnable creatingObject = new createObjects(goingMessages, config.get(0), createObjectSleep, capacityOfQueue,datasetRow);
+        Runnable creatingObject = new createObjects(goingMessages, config.get(0), createObjectSleep, capacityOfQueue, datasetRow);
         Thread threadCreatingObject = new Thread(creatingObject);
         threadCreatingObject.start();
 
         /*
         Bu objectleri clientSocket'e gönderen Thread.
         */
-        Runnable sendingObjects = new SendObjects(DQ,goingMessages, clientSocket, sendObjectSleep, config.get(0));
+        Runnable sendingObjects = new SendObjects(DQ, goingMessages, clientSocket, sendObjectSleep, config.get(0));
         Thread threadSendingObjects = new Thread(sendingObjects);
         threadSendingObjects.start();
 
-        Runnable sendDelayedObjects = new SendDelayedObject(DQ , clientSocket, sendObjectSleep,config.get(0));
+        Runnable sendDelayedObjects = new SendDelayedObject(DQ, clientSocket, sendObjectSleep, config.get(0));
         Thread threadSendDelayedObject = new Thread(sendDelayedObjects);
         threadSendDelayedObject.start();
 
 
-        threadSendDelayedObject.join();
-        threadCreatingObject.join();
-        threadReceivingQueueOcc.join();
         threadSendingObjects.join();
 
-
+        new Histogram();
+        Thread.sleep(10000);
         System.exit(1);
     }
 

@@ -12,4 +12,8 @@ public interface IPriority {
 
     }
 
+    int getCounter();
+
+    void setCounter(int counter);
+
 }

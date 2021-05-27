@@ -6,10 +6,6 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.text.DecimalFormat;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.DelayQueue;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static side.DelayObject.takeWaitingTime;
 
@@ -44,7 +40,7 @@ public class SendDelayedObject implements Runnable {
         double rttOfMessage = 0;
         double passengerPriority;
 
-        FileWriter fileWriter = new FileOperations().createInputfile("Delayed "+topic);
+        FileWriter fileWriter = new FileOperations().createInputfile("Delayed " + topic);
 
         while (true) {
             try {
@@ -64,7 +60,8 @@ public class SendDelayedObject implements Runnable {
                 if (delayedMessage.getCounter() == 4) {
                     fileWriter.write("dropped\n");
                     System.out.println("dropped");
-                    MultipleClients.counter.incrementDroppedMessagesAfterSeveralTrialAttempts();
+                    MultipleClients.counter.incrementDroppedMessagesAfterSeveralAttempts();
+                    MultipleClients.delayedMessagesPriority.get(4).add(delayedMessage.getInitialPriorityIfDelayed());
                 } else {
 
                     passengerPriority = delayedMessage.getPriority();
@@ -78,9 +75,18 @@ public class SendDelayedObject implements Runnable {
                             fileWriter)) {
 
                         switch (delayedMessage.getCounter()) {
-                            case 1 -> MultipleClients.counter.incrementSendMessageInSecondAttempt();
-                            case 2 -> MultipleClients.counter.incrementSendMessageInThirdAttempt();
-                            case 3 -> MultipleClients.counter.incrementSendMessageInFourthAttempt();
+                            case 1 -> {
+                                MultipleClients.counter.incrementSendMessageInSecondAttempt();
+                                MultipleClients.delayedMessagesPriority.get(1).add(delayedMessage.getInitialPriorityIfDelayed());
+                            }
+                            case 2 -> {
+                                MultipleClients.counter.incrementSendMessageInThirdAttempt();
+                                MultipleClients.delayedMessagesPriority.get(2).add(delayedMessage.getInitialPriorityIfDelayed());
+                            }
+                            case 3 -> {
+                                MultipleClients.counter.incrementSendMessageInFourthAttempt();
+                                MultipleClients.delayedMessagesPriority.get(3).add(delayedMessage.getInitialPriorityIfDelayed());
+                            }
                             default -> System.err.println("Illegal Message Delayed Counter Value");
                         }
 
@@ -105,12 +111,12 @@ public class SendDelayedObject implements Runnable {
                         time = (time - time1) / 1000000;
                         String counterTime = "Counter: " + MultipleClients.counter.getCounter() + " Timer: " + df.format(time) + "  ";
                         fileWriter.write(counterTime);
-                        System.out.println("delayedobject"+counterTime);
+                        System.out.println("delayedobject" + counterTime);
                         fileWriter.write("gönderdim xd\n");
                         System.out.println("gönderdim xd");
                     } else {
-                        System.out.println("Don't Send to Server! Wait Until a While!");
-                        fileWriter.write("Don't Send to Server! Wait Until a While!\n");
+                        System.out.println("Again Don't Send to Server! Wait Until a While! ");
+                        fileWriter.write("Again Don't Send to Server! Wait Until a While!\n");
                         delayedMessage.setPriority(passengerPriority);
                         double delayTime = takeWaitingTime(delayedMessage.getSize(),
                                 rttOfMessage,
@@ -127,8 +133,9 @@ public class SendDelayedObject implements Runnable {
 
 
             } catch (Exception e) {
-                //busy waiting
+
             }
+
 
 
         }

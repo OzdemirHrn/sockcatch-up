@@ -79,6 +79,16 @@ public class Priority implements IPriority {
         this.tempAnnealing = tempAnnealing;
     }
 
+    @Override
+    public int getCounter() {
+        return 0;
+    }
+
+    @Override
+    public void setCounter(int counter) {
+
+    }
+
     /**
      * For Test
      *
