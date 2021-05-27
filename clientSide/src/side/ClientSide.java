@@ -12,8 +12,7 @@ import java.util.concurrent.LinkedBlockingDeque;
  */
 public class ClientSide {
 
-    static int Qmin, Qmax;
-
+    static int Qmin,Qmax;
     /*
     Gidecek mesajların beklediği Queue
     Thread Safe için Blocking Queue kullandım. Ama tekrar bakılabilir -----
@@ -72,6 +71,9 @@ public class ClientSide {
         threadSendDelayedObject.start();
 
 
+        threadSendDelayedObject.join();
+        threadCreatingObject.join();
+        threadReceivingQueueOcc.join();
         threadSendingObjects.join();
 
         new Histogram();
