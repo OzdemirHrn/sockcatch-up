@@ -76,7 +76,7 @@ public class ClientSide {
         threadReceivingQueueOcc.join();
         threadSendingObjects.join();
 
-//        new Histogram();
+        new Histogram();
         Thread.sleep(10000);
         System.exit(1);
     }
