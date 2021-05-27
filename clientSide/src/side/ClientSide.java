@@ -24,7 +24,7 @@ public class ClientSide {
         int capacityOfQueue = Integer.parseInt(config.get(3));
         int datasetRow = Integer.parseInt(config.get(4));
         int sizeOfSensor = Integer.parseInt(config.get(5));
-
+        int sensorType = Integer.parseInt(config.get(6));
 
         LinkedBlockingDeque<Message> goingMessages = new LinkedBlockingDeque<>(capacityOfQueue);
         BlockingQueue<DelayObject> DQ = new DelayQueue<>();
@@ -33,7 +33,7 @@ public class ClientSide {
         Bu argument topic olarak görev yapıyor.
         Bu client sadece bu topice message yolluyor
         */
-        Socket clientSocket = new Socket("192.168.1.42", 6789);
+        Socket clientSocket = new Socket("192.168.1.39", 6789);
         /*
         Qmin ve Qmax'ı buradan alsam direkt???
         0.9 0.85 0.79 0.69
@@ -62,7 +62,7 @@ public class ClientSide {
         /*
         Bu objectleri clientSocket'e gönderen Thread.
         */
-        Runnable sendingObjects = new SendObjects(DQ, goingMessages, clientSocket, sendObjectSleep, config.get(0));
+        Runnable sendingObjects = new SendObjects(DQ, goingMessages, clientSocket, sendObjectSleep, config.get(0),sensorType);
         Thread threadSendingObjects = new Thread(sendingObjects);
         threadSendingObjects.start();
 
@@ -76,7 +76,7 @@ public class ClientSide {
         threadReceivingQueueOcc.join();
         threadSendingObjects.join();
 
-        new Histogram();
+//        new Histogram();
         Thread.sleep(10000);
         System.exit(1);
     }

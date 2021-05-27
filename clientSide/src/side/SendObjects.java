@@ -24,23 +24,24 @@ public class SendObjects implements Runnable {
     private final int sendObjectSleep;
     private LinkedBlockingDeque<Message> outgoingMessage;
     private final Socket clientSocket;
-
-    SensorType sensorType = new SensorType(4);
+    private final double award = 4;
+    private SensorType sensorType;
 
     ClientAnalysis clientAnalysis = new ClientAnalysis();
     BlockingQueue<DelayObject> DQ;
 
-    private final double award = 4;
+
     Rtt rtt = new Rtt(0.05);
     NashEq nashEq = new NashEq();
     boolean rttFirstCome = false;
 
-    public SendObjects(BlockingQueue<DelayObject> DQ, LinkedBlockingDeque<Message> outgoingMessage, Socket clientSocket, int sendObjectSleep, String topic) {
+    public SendObjects(BlockingQueue<DelayObject> DQ, LinkedBlockingDeque<Message> outgoingMessage, Socket clientSocket, int sendObjectSleep, String topic,int sensorType) {
         this.DQ = DQ;
         this.topic = topic;
         this.outgoingMessage = outgoingMessage;
         this.clientSocket = clientSocket;
         this.sendObjectSleep = sendObjectSleep;
+        this.sensorType = new SensorType(sensorType);
     }
 
     @Override
