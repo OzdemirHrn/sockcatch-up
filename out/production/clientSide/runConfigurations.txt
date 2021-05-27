@@ -1,0 +1,19 @@
+10
+topic createObjectSleep sendObjectSleep capacityOfQueue datasetRow sizeOfSensor
+Temperature/ComedorSensor 1 50 10000 27 1
+Temperature/HabitacionSensor 1 50 10000 28 1
+Weather/Temperature 1 50 10000 29 2
+CO2/ComedorSensor 1 50 10000 30 5
+CO2/HabitacionSensor 1 50 10000 31 5
+Humedad_Comedor_Sensor 1 50 10000 32 8
+Humedad_Habitacion_Sensor 1 50 10000 33 8
+Lighting_Comedor_Sensor 1 50 10000 34 9
+Lighting_Habitacion_Sensor 1 50 10000 35 9
+Meteo_Exterior_Crepusculo 1 50 10000 37 2
+Meteo_Exterior_Viento 1 50 10000 38 4
+Meteo_Exterior_Sol_Oest 1 50 10000 39 4
+Meteo_Exterior_Sol_Est 1 50 10000 40 4
+Meteo_Exterior_Sol_Sud 1 50 10000 41 4
+Meteo_Exterior_Piranometro 1 50 10000 42 4
+Temperature_Exterior_Sensor 1 50 10000 43 2
+Humedad_Exterior_Sensor 1 50 10000 44 2

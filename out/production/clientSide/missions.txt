@@ -1,0 +1,7 @@
++++Size şuan default 0.5
+
++++PriorityKorçak NaN dönderiyor.
+
++++ClientSide gönderme sayısını kısıtlicak. Serverside yerine
+
+
