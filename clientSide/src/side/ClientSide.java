@@ -1,10 +1,7 @@
 package side;
 
-import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.DelayQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
 /**
@@ -27,29 +24,8 @@ public class ClientSide {
         int sensorType = Integer.parseInt(config.get(6));
 
         LinkedBlockingDeque<Message> goingMessages = new LinkedBlockingDeque<>(capacityOfQueue);
-        BlockingQueue<DelayObject> DQ = new DelayQueue<>();
-        /*
-        Client side main methodundan  argument alıyor.
-        Bu argument topic olarak görev yapıyor.
-        Bu client sadece bu topice message yolluyor
-        */
+
         Socket clientSocket = new Socket("192.168.1.39", 6789);
-        /*
-        Qmin ve Qmax'ı buradan alsam direkt???
-        0.9 0.85 0.79 0.69
-        */
-
-        ObjectInputStream ois;
-
-        ois = new ObjectInputStream(clientSocket.getInputStream());
-        String message = (String) ois.readObject();
-        Qmin = Integer.parseInt(message.substring(0, 2));
-        Qmax = Integer.parseInt(message.substring(5, 7));
-        System.out.println(Qmin + "  " + Qmax);
-
-        Runnable receivingQueueOcc = new QueueOccupancyReceiver(clientSocket);
-        Thread threadReceivingQueueOcc = new Thread(receivingQueueOcc);
-        threadReceivingQueueOcc.start();
 
         /*
         Message sınıfından topic ve random value argumentleriyle
@@ -62,18 +38,13 @@ public class ClientSide {
         /*
         Bu objectleri clientSocket'e gönderen Thread.
         */
-        Runnable sendingObjects = new SendObjects(DQ, goingMessages, clientSocket, sendObjectSleep, config.get(0),sensorType);
+        Runnable sendingObjects = new SendObjects(goingMessages, clientSocket, sendObjectSleep, config.get(0),sensorType);
         Thread threadSendingObjects = new Thread(sendingObjects);
         threadSendingObjects.start();
 
-        Runnable sendDelayedObjects = new SendDelayedObject(DQ, clientSocket, sendObjectSleep, config.get(0));
-        Thread threadSendDelayedObject = new Thread(sendDelayedObjects);
-        threadSendDelayedObject.start();
 
-
-        threadSendDelayedObject.join();
         threadCreatingObject.join();
-        threadReceivingQueueOcc.join();
+
         threadSendingObjects.join();
 
 //        new Histogram();

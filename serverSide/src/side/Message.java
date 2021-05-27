@@ -12,28 +12,6 @@ class Message implements Serializable {
     private float message;
     private int operation;
     private float size;
-    private boolean delayed = false;
-    private double priority;
-    private double initialPriorityIfDelayed;
-    private int counter = 0;
-    private double rtt = 0;
-
-    public double getInitialPriorityIfDelayed() {
-        return initialPriorityIfDelayed;
-    }
-
-    public void setInitialPriorityIfDelayed(double initialPriorityIfDelayed) {
-        this.initialPriorityIfDelayed = initialPriorityIfDelayed;
-    }
-
-    public double getRtt() {
-        return rtt;
-    }
-
-    public void setRtt(double rtt) {
-        this.rtt = rtt;
-    }
-
 
     public float getSize() {
         return size;
@@ -63,27 +41,4 @@ class Message implements Serializable {
 
     }
 
-    public boolean isDelayed() {
-        return delayed;
-    }
-
-    public void setDelayedTrue() {
-        this.delayed = true;
-    }
-
-    public double getPriority() {
-        return priority;
-    }
-
-    public void setPriority(double priority) {
-        this.priority = priority;
-    }
-
-    public int getCounter() {
-        return counter;
-    }
-
-    public void setCounter(int counter) {
-        this.counter = counter;
-    }
 }

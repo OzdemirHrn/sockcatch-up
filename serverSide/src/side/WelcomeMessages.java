@@ -16,8 +16,7 @@ public final class WelcomeMessages implements Runnable {
      */
     private Socket client = null;
     private LinkedBlockingQueue<Message> incomingMessagesQueue;
-    private NashEq nashEq = new NashEq();
-    private final double award = 4;
+
     /*
      şimdi Qmin ve Qmaxı her new connection established'ta göndermem lazım.
      sadece 1 kere gönderilecek.
@@ -42,36 +41,16 @@ public final class WelcomeMessages implements Runnable {
                 InputStream inputStream = client.getInputStream();
                 ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
 
-                 /*
-                ObjectOutputStream oos = new ObjectOutputStream(client.getOutputStream());
-                oos.writeObject("Hi Client, BU KUYRUK YOUĞUNLUĞUDUR " + incomingMessage.size());
-                */
-
-                /*
-                Queueya objectlerin eklendiği kısım
-                 */
                 Message inComingMessage = (Message) objectInputStream.readObject();
 
-                if (nashEq.action(
-                        inComingMessage.getSize(),
-                        inComingMessage.getRtt(),
-                        inComingMessage.getPriority(),
-                        award,
-                        getScaledQueueOccupancy(),
-                        getScaledQueueOccupancy())) {
 
                     try {
                         incomingMessagesQueue.add(inComingMessage);
                     } catch (IllegalStateException e) {
+                        System.out.println("Incoming Message Has Dropped!");
                         dropped++;
                         //System.out.println("dropped count: "+ dropped );
                     }
-
-
-                } else {
-                    System.out.println("Incoming Message Has Dropped!");
-                }
-
 
             } catch (IOException | ClassNotFoundException ex) {
 
@@ -90,15 +69,6 @@ public final class WelcomeMessages implements Runnable {
             }
         }
 
-    }
-
-
-    private double getScaledQueueOccupancy() {
-        double queueValue = incomingMessagesQueue.size(), queueOccupancy;
-        if (queueValue < ServerSide.Qmin) queueOccupancy = 0;
-        else if (queueValue > ServerSide.Qmax) queueOccupancy = 1;
-        else queueOccupancy = queueValue / 100;
-        return queueOccupancy;
     }
 
 }
