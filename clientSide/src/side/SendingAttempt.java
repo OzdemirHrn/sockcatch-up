@@ -3,9 +3,9 @@ package side;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class Histogram {
+public class SendingAttempt {
 
-    public Histogram() throws IOException {
+    public SendingAttempt() throws IOException {
 
         FileWriter fisrtAttempt = new FileOperations().createInputfile("FirstAttempt");
         for (double priority:

@@ -48,7 +48,7 @@ public class SendObjects implements Runnable {
     public void run() {
 
         final float start1 = System.nanoTime();
-        IPriority priority = new Priority();
+        IPriority priority = new PriorityKorcak();
         double rttOfMessage = 0;
         double passengerPriority;
 
@@ -90,7 +90,7 @@ public class SendObjects implements Runnable {
                         MultipleClients.counter.incrementSendMessageInFirstAttempt();
                         MultipleClients.delayedMessagesPriority.get(0).add(passengerPriority);
                         System.out.println();
-                        passenger.setCounter(passenger.getCounter() + 1);
+
 
                         //Son gönderdiğim mesaj <-- First Consistent Data
                         priority.setFirstConsistentData(passenger.getMessage());

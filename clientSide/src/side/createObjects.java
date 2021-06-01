@@ -19,20 +19,21 @@ public class createObjects implements Runnable {
     private String topic;
     private float size = 0.5f;
     private final float award = 4;
+    private double sizeOfSensor;
 
     private static final Random random = new Random();
     private int createObjectSleep;
     private int capacityOfQueue;
     private int count;
-    static final Object o=new Object();
+    static final Object o = new Object();
 
-    public createObjects(LinkedBlockingDeque<Message> outgoingMessage, String topic, int createObjectSleep, int capacityOfQueue, int count,float sizeOfSensor) {
+    public createObjects(LinkedBlockingDeque<Message> outgoingMessage, String topic, int createObjectSleep, int capacityOfQueue, int count, float sizeOfSensor) {
         this.outgoingMessage = outgoingMessage;
         this.topic = topic;
         this.createObjectSleep = createObjectSleep;
         this.capacityOfQueue = capacityOfQueue;
         this.count = count;
-        this.size = (float) (sizeOfSensor*0.1+Math.random()*0.1);
+        this.sizeOfSensor = sizeOfSensor;
     }
 
     @Override
@@ -44,8 +45,6 @@ public class createObjects implements Runnable {
 
 
          */
-
-
 
 
         ArrayList<Float> temperatureSensor1 = null;
@@ -81,32 +80,23 @@ public class createObjects implements Runnable {
             operation = createRandomNumberBetween(1, 100);
             // 1000 2000 3000 4000
 
-
+            size = (float) (sizeOfSensor * 0.1 + Math.random() * 0.1);
             try {
-                if (outgoingMessage.size() < capacityOfQueue) {
+                message = temperatureSensor1.get(index);
+                index++;
+                //System.out.println(message);
+                outgoingMessage.add(new Message(topic, message, operation, size));
 
-                    message = temperatureSensor1.get(index);
-                    index++;
-                    //System.out.println(message);
-                    outgoingMessage.add(new Message(topic, message, operation, size));
-
-
-
-                } else {
-                    dropped++;
-                    System.out.println("Drop sayısı:" + dropped);
-                }
 
             } catch (IndexOutOfBoundsException e) {
 
             }
-            synchronized(o) {
+            synchronized (o) {
                 // Calling wait() will block this thread until another thread
                 // calls notify() on the object.
                 o.notify();
             }
         }
-
 
 
     }

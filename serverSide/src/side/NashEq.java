@@ -47,7 +47,7 @@ public class NashEq {
         System.out.println(nashStr);
 
 
-        if (nashArray[0][1] > 0) {
+        if (nashArray[0][1] > -0.22) {
             return true;
         }
 

@@ -33,7 +33,7 @@ public class ClientSide {
         Bu argument topic olarak görev yapıyor.
         Bu client sadece bu topice message yolluyor
         */
-        Socket clientSocket = new Socket("192.168.1.39", 6789);
+        Socket clientSocket = new Socket("192.168.1.136", 6789);
         /*
         Qmin ve Qmax'ı buradan alsam direkt???
         0.9 0.85 0.79 0.69
@@ -71,13 +71,10 @@ public class ClientSide {
         threadSendDelayedObject.start();
 
 
-        threadSendDelayedObject.join();
-        threadCreatingObject.join();
-        threadReceivingQueueOcc.join();
         threadSendingObjects.join();
 
-        new Histogram();
-        Thread.sleep(10000);
+        new SendingAttempt();
+        //Thread.sleep(10000);
         System.exit(1);
     }
 

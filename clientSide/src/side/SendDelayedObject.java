@@ -52,12 +52,12 @@ public class SendDelayedObject implements Runnable {
             try {
                 Message delayedMessage = DQ.poll().message;
 
-                if (delayedMessage.getPriority() <= 0.9) {
-                    delayedMessage.setPriority(delayedMessage.getPriority() + 0.1);
+                if (delayedMessage.getPriority() <= 0.95) {
+                    delayedMessage.setPriority(delayedMessage.getPriority() + 0.05);
                 } else {
                     delayedMessage.setPriority(1);
                 }
-                if (delayedMessage.getCounter() == 3) {
+                if (delayedMessage.getCounter() == 4) {
                     fileWriter.write("dropped\n");
                     System.out.println("dropped");
                     MultipleClients.counter.incrementDroppedMessagesAfterSeveralAttempts();

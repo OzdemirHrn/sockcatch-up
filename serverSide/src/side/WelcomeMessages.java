@@ -64,11 +64,12 @@ public final class WelcomeMessages implements Runnable {
                         incomingMessagesQueue.add(inComingMessage);
                     } catch (IllegalStateException e) {
                         dropped++;
-                        //System.out.println("dropped count: "+ dropped );
+                        System.out.println("dropped count: "+ dropped );
                     }
 
 
                 } else {
+
                     System.out.println("Incoming Message Has Dropped!");
                 }
 
