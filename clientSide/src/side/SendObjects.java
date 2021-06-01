@@ -19,7 +19,7 @@ import static side.DelayObject.takeWaitingTime;
 public class SendObjects implements Runnable {
 
 
-    final static int limitOfMessage = 1100;
+    final static int limitOfMessage = 5000;
     private final String topic;
     private final int sendObjectSleep;
     private LinkedBlockingDeque<Message> outgoingMessage;
@@ -48,7 +48,7 @@ public class SendObjects implements Runnable {
     public void run() {
 
         final float start1 = System.nanoTime();
-        IPriority priority = new Priority();
+        IPriority priority = new PriorityKorcak();
         double rttOfMessage = 0;
         double passengerPriority;
 
