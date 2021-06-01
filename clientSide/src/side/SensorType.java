@@ -29,12 +29,12 @@ public class SensorType {
     }
 
     private int fastwithSleep() {
-        if (this.counterFastWithSleep < 15) {
+        if (this.counterFastWithSleep < 50) {
             this.counterFastWithSleep++;
             return 10;
         } else {
             this.counterFastWithSleep = 0;
-            return ((int) ((Math.random() * 10+10)*1000));
+            return ((int) ((Math.random() * 10+2)*1000));
         }
 
     }
@@ -44,36 +44,35 @@ public class SensorType {
     }
 
     private int fastSending() {
-        return 50;
+        return 100;
     }
 
     private int randomSending() {
         int randomSending = random.nextInt(100);
 
-        if (randomSending < 5) {
-            randomSending = random.nextInt(7);
-        } else if (randomSending < 10) {
-            randomSending = randomSending * 5;
-        } else if (randomSending < 20) {
-            randomSending = randomSending * 7;
-        } else if (randomSending < 30) {
-            randomSending = random.nextInt(3);
-        } else if (randomSending < 40) {
-            randomSending = randomSending * 4;
-        } else if (randomSending < 50) {
-            randomSending = random.nextInt(3);
-        } else if (randomSending < 60) {
-            randomSending = randomSending * 5;
-        } else if (randomSending < 70) {
-            randomSending = random.nextInt(7);
-        } else if (randomSending < 80) {
-            randomSending = randomSending * 9;
-        } else if (randomSending < 93) {
-            //19k oalbilrş
-
-            randomSending = 15;
-
+        if (randomSending < 3) {
+            randomSending = 50;
+        } else if (randomSending < 6) {
+            randomSending = 2000;
         }
+        else {
+            randomSending = randomSending * 10;
+        }
+//         else if (randomSending < 26) {
+//
+//        } else if (randomSending < 36) {
+//            randomSending = randomSending * 4;
+//        } else if (randomSending < 46) {
+//
+//        } else if (randomSending < 60) {
+//            randomSending = randomSending * 5;
+//        } else if (randomSending < 70) {
+//
+//        } else if (randomSending < 80) {
+//            randomSending = randomSending * 9;
+//        } else if (randomSending < 93) {
+//            randomSending = 15;
+//        }
 
         return randomSending;
     }

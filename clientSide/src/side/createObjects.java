@@ -17,7 +17,9 @@ public class createObjects implements Runnable {
     private float message;
     private int operation;
     private String topic;
-    private float size;
+    private float size = 0.5f;
+    private double sizeOfSensor;
+
     private static final Random random = new Random();
     private int createObjectSleep;
     private int capacityOfQueue;
@@ -30,7 +32,7 @@ public class createObjects implements Runnable {
         this.createObjectSleep = createObjectSleep;
         this.capacityOfQueue = capacityOfQueue;
         this.count = count;
-        this.size = (float) (sizeOfSensor * 0.1 + Math.random() * 0.1);
+        this.sizeOfSensor = sizeOfSensor;
     }
 
     @Override
@@ -45,7 +47,6 @@ public class createObjects implements Runnable {
             e.printStackTrace();
         }
 
-
         while (true) {
 
 
@@ -57,10 +58,12 @@ public class createObjects implements Runnable {
 
             operation = createRandomNumberBetween(1, 100);
 
-            try {
 
+            size = (float) (sizeOfSensor * 0.1 + Math.random() * 0.1);
+            try {
                 message = temperatureSensor1.get(index);
                 index++;
+                //System.out.println(message);
                 outgoingMessage.add(new Message(topic, message, operation, size));
 
 
@@ -68,8 +71,6 @@ public class createObjects implements Runnable {
 
             }
             synchronized (o) {
-                // Calling wait() will block this thread until another thread
-                // calls notify() on the object.
                 o.notify();
             }
         }
