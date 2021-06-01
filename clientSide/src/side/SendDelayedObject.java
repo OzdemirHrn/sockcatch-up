@@ -1,7 +1,6 @@
 package side;
 
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.text.DecimalFormat;
@@ -52,8 +51,8 @@ public class SendDelayedObject implements Runnable {
             try {
                 Message delayedMessage = DQ.poll().message;
 
-                if (delayedMessage.getPriority() <= 0.9) {
-                    delayedMessage.setPriority(delayedMessage.getPriority() + 0.1);
+                if (delayedMessage.getPriority() <= 0.95) {
+                    delayedMessage.setPriority(delayedMessage.getPriority() + 0.05);
                 } else {
                     delayedMessage.setPriority(1);
                 }
@@ -117,7 +116,6 @@ public class SendDelayedObject implements Runnable {
                     } else {
                         System.out.println("Again Don't Send to Server! Wait Until a While! ");
                         fileWriter.write("Again Don't Send to Server! Wait Until a While!\n");
-                        delayedMessage.setPriority(passengerPriority);
                         double delayTime = takeWaitingTime(delayedMessage.getSize(),
                                 rttOfMessage,
                                 passengerPriority,

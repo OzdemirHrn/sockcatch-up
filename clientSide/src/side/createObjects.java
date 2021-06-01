@@ -83,19 +83,11 @@ public class createObjects implements Runnable {
 
 
             try {
-                if (outgoingMessage.size() < capacityOfQueue) {
 
                     message = temperatureSensor1.get(index);
                     index++;
                     //System.out.println(message);
                     outgoingMessage.add(new Message(topic, message, operation, size));
-
-
-
-                } else {
-                    dropped++;
-                    System.out.println("Drop sayısı:" + dropped);
-                }
 
             } catch (IndexOutOfBoundsException e) {
 
