@@ -29,12 +29,12 @@ public class SensorType {
     }
 
     private int fastwithSleep() {
-        if (this.counterFastWithSleep < 10) {
+        if (this.counterFastWithSleep < 15) {
             this.counterFastWithSleep++;
-            return 50;
+            return 10;
         } else {
             this.counterFastWithSleep = 0;
-            return 10000;
+            return ((int) ((Math.random() * 10+10)*1000));
         }
 
     }

@@ -29,12 +29,11 @@ public class DataSet {
 
         while (count < strSplit.length) {
             sensorValuesFromDataSet.add(Float.parseFloat(strSplit[count]));
-            count += 23;
+            count += 19;
         }
 
         return sensorValuesFromDataSet;
 
     }
-
 
 }

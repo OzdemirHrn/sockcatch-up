@@ -43,11 +43,8 @@ public class ClientSide {
         threadSendingObjects.start();
 
 
-        threadCreatingObject.join();
-
         threadSendingObjects.join();
 
-//        new Histogram();
         Thread.sleep(10000);
         System.exit(1);
     }
