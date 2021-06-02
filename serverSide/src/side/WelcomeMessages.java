@@ -17,7 +17,7 @@ public final class WelcomeMessages implements Runnable {
     private Socket client = null;
     private LinkedBlockingQueue<Message> incomingMessagesQueue;
     private NashEq nashEq = new NashEq();
-    private final double award = 4;
+    private final double award = 50;
     /*
      şimdi Qmin ve Qmaxı her new connection established'ta göndermem lazım.
      sadece 1 kere gönderilecek.

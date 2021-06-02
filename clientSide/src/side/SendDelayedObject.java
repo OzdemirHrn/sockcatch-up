@@ -57,9 +57,10 @@ public class SendDelayedObject implements Runnable {
                 } else {
                     delayedMessage.setPriority(1);
                 }
-                if (delayedMessage.getCounter() == 3) {
+                if (delayedMessage.getCounter() == 4) {
                     fileWriter.write("dropped\n");
-                    System.out.println("dropped");
+                    MultipleClients.counter.decrementtsizeOfDelayedQueue();
+                   // System.out.println("dropped");
                     MultipleClients.counter.incrementDroppedMessagesAfterSeveralAttempts();
                     MultipleClients.delayedMessagesPriority.get(4).add(delayedMessage.getInitialPriorityIfDelayed());
                 } else {
@@ -111,11 +112,11 @@ public class SendDelayedObject implements Runnable {
                         time = (time - time1) / 1000000;
                         String counterTime = "Counter: " + MultipleClients.counter.getCounter() + " Timer: " + df.format(time) + "  ";
                         fileWriter.write(counterTime);
-                        System.out.println("delayedobject" + counterTime);
+                     //   System.out.println("delayedobject" + counterTime);
                         fileWriter.write("gönderdim xd\n");
-                        System.out.println("gönderdim xd");
+                      //  System.out.println("gönderdim xd");
                     } else {
-                        System.out.println("Again Don't Send to Server! Wait Until a While! ");
+                       // System.out.println("Again Don't Send to Server! Wait Until a While! ");
                         fileWriter.write("Again Don't Send to Server! Wait Until a While!\n");
                         double delayTime = takeWaitingTime(delayedMessage.getSize(),
                                 rttOfMessage,
