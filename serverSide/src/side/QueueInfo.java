@@ -1,7 +1,7 @@
 package side;
 
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -9,7 +9,7 @@ public class QueueInfo implements Runnable {
 
     private final Socket sensor;
     private LinkedBlockingQueue<Message> incomingMessage;
-    OutputStream outToSensor;
+    ObjectOutputStream outToSensor;
     byte[] toSensor=new byte[1024];
 
 
@@ -58,10 +58,11 @@ public class QueueInfo implements Runnable {
         //Sensore göndermesi lazım queue bilgisi
         //toSensor = ByteBuffer.allocate(4).putInt(incomingMessage.size()).array();
         //System.out.println("Queue Occupancy sent-> "+incomingMessage.size());
-        outToSensor = sensor.getOutputStream();
-        String message=""+incomingMessage.size();
-        toSensor=message.getBytes();
-
-        outToSensor.write(toSensor);
+        //outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
+        outToSensor = new ObjectOutputStream(sensor.getOutputStream());
+        //String message=""+incomingMessage.size();
+        //toSensor=message.getBytes();
+        outToSensor.writeObject((double) incomingMessage.size());
+        //outToSensor.write(toSensor);
     }
 }

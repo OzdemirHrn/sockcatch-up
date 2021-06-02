@@ -44,7 +44,7 @@ public class SendDelayedObject implements Runnable {
 
         while (true) {
             try {
-                Thread.sleep(5);
+                Thread.sleep(10);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

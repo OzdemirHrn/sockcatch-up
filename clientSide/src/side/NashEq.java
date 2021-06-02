@@ -30,7 +30,7 @@ public class NashEq {
                 ", A=" + award +
                 ", Q=" + queueOccupancy + " ===>   ";
 
-       // System.out.print(information);
+        System.out.print(information);
         fw.write(information);
 
         sendAccept(size, RTT, priority, award, queueOccupancy, queue2);
@@ -44,7 +44,7 @@ public class NashEq {
                 + "    " + Double.parseDouble(df.format(nashArray[0][2]).replaceAll(",", "."))
                 + ", " + Double.parseDouble(df.format(nashArray[0][3]).replaceAll(",", "."));
 
-        //System.out.println(nashStr);
+        System.out.println(nashStr);
         fw.write(nashStr+"\n");
 
         if (nashArray[0][0] >= nashArray[0][2] && nashArray[0][0] > 0) {
