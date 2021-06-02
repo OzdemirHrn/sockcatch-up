@@ -31,7 +31,7 @@ public class SensorType {
     private int fastwithSleep() {
         if (this.counterFastWithSleep < 50) {
             this.counterFastWithSleep++;
-            return 20;
+            return 50;
         } else {
             this.counterFastWithSleep = 0;
             return ((int) ((Math.random() * 10+2)*1000));

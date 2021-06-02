@@ -4,7 +4,7 @@ public class ServerOperation {
 
     public void operation(String messageDeviceInfo, int messageOperation,float messageSize) throws InterruptedException {
 
-        Thread.sleep((long) (messageSize*60));
+        Thread.sleep((long) (messageSize*100));
 
         /*
         if (messageOperation > 4000) { //7m

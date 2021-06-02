@@ -15,6 +15,6 @@ Meteo_Exterior_Viento 1 50 1000000 32 4 2
 Meteo_Exterior_Sol_Oest 1 50 1000000 33 4 3
 Meteo_Exterior_Sol_Est 1 50 1000000 34 4 3
 Meteo_Exterior_Sol_Sud 1 50 1000000 35 4 3
-Meteo_Exterior_Piranometro 1 50 1000000 36 2 2
-Temperature_Exterior_Sensor 1 50 1000000 37 2 2
-Humedad_Exterior_Sensor 1 50 1000000 38 2 2
+Meteo_Exterior_Piranometro 1 50 1000000 36 2 4
+Temperature_Exterior_Sensor 1 50 1000000 37 2 4
+Humedad_Exterior_Sensor 1 50 1000000 38 2 4
