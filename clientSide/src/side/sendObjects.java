@@ -27,6 +27,8 @@ public class sendObjects implements Runnable {
     private final Socket clientSocket;
 
     RandomVariable randomVariable = new RandomVariable();
+    SensorType sensorType = new SensorType(3);
+
     ClientAnalysis clientAnalysis = new ClientAnalysis();
     BlockingQueue<DelayObject> DQ;
 
@@ -60,8 +62,8 @@ public class sendObjects implements Runnable {
 
                 ObjectOutputStream outToServer;
                 try {
-                    int randomSending = randomVariable.getRandomVariable();
-                    Thread.sleep(400);
+                    int sending = sensorType.operatingFrequency();
+                    Thread.sleep(sending);
                     //outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
                     //System.out.println(outgoingMessage.peek().getMessage()+"  "+outgoingMessage.peek().getTopic()+"  Queue size is "+outgoingMessage.size());
 
