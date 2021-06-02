@@ -24,14 +24,14 @@ public class SendObjects implements Runnable {
     private final int sendObjectSleep;
     private LinkedBlockingDeque<Message> outgoingMessage;
     private final Socket clientSocket;
-    private final double award = 4;
+    static final double award = 4;
     private SensorType sensorType;
-
+    static final double rttAlpha=0.05;
     ClientAnalysis clientAnalysis = new ClientAnalysis();
     BlockingQueue<DelayObject> DQ;
 
 
-    Rtt rtt = new Rtt(0.05);
+    Rtt rtt = new Rtt(rttAlpha);
     NashEq nashEq = new NashEq();
     boolean rttFirstCome = false;
 

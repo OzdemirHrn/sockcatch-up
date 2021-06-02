@@ -7,6 +7,8 @@ import java.text.DecimalFormat;
 import java.util.concurrent.BlockingQueue;
 
 import static side.DelayObject.takeWaitingTime;
+import static side.SendObjects.award;
+import static side.SendObjects.rttAlpha;
 
 
 public class SendDelayedObject implements Runnable {
@@ -27,8 +29,7 @@ public class SendDelayedObject implements Runnable {
 
     ClientAnalysis clientAnalysis = new ClientAnalysis();
 
-    private final double award = 3;
-    Rtt rtt = new Rtt(0.05);
+    Rtt rtt = new Rtt(rttAlpha);
     NashEq nashEq = new NashEq();
     boolean rttFirstCome = false;
 
@@ -43,7 +44,7 @@ public class SendDelayedObject implements Runnable {
 
         while (true) {
             try {
-                Thread.sleep(10);
+                Thread.sleep(5);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
