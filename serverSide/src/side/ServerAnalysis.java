@@ -13,7 +13,7 @@ public class ServerAnalysis {
     // test variables
     static int incrementOfCounter = 50;                 // tutulma aralığını buraya yaz, ne sıklıkla tutulacak
     static int totalCounter = incrementOfCounter;
-    static int limitOfCounter = 2000;               // nereye kadar gidecek buraya onu yaz 30.000 e gidecekse bunu buraya yaz
+    static int limitOfCounter = 1000;               // nereye kadar gidecek buraya onu yaz 30.000 e gidecekse bunu buraya yaz
     static int SizeOfArray = (int) (limitOfCounter / incrementOfCounter) + 1;
     static int arrayIndexNumber = 0;
     static float[] arr = new float[SizeOfArray];
@@ -25,6 +25,7 @@ public class ServerAnalysis {
     FileWriter fileWriterTime = new FileOperationServer().createInputfile("time");
     FileWriter fileWriterQueueSize = new FileOperationServer().createInputfile("queueSize");
     FileWriter fileWriterDroppedCount = new FileOperationServer().createInputfile("droppedCount");
+    FileWriter fileWriterDroppedMessagesPriorities = new FileOperationServer().createInputfile("Server - Dropped Messages Priorities");
 
 
     void publishersTimer(int incomingMessageSize, Counter counter, float start, Queue<WelcomeMessages> allClients ) {
@@ -51,6 +52,13 @@ public class ServerAnalysis {
     }
 
     public void printArr() throws IOException {
+
+        for (double priority :
+                ServerSide.droppedMessagesPriorities) {
+            fileWriterDroppedMessagesPriorities.write(priority +"\n");
+        }
+        fileWriterDroppedMessagesPriorities.close();
+
         int i;
         int counterNumber = 0;
         System.out.println("counterNumber********************************************************************************");

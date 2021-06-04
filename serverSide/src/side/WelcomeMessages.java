@@ -51,7 +51,7 @@ public final class WelcomeMessages implements Runnable {
                 try {
                     incomingMessagesQueue.add(inComingMessage);
                 } catch (IllegalStateException e) {
-
+                    ServerSide.droppedMessagesPriorities.add(inComingMessage.getInitialPriorityIfDelayed());
                     dropped++;
                     //System.out.println("dropped count: "+ dropped );
                 }

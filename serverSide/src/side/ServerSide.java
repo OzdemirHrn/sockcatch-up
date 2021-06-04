@@ -3,6 +3,7 @@ package side;
 
 import java.io.ObjectOutputStream;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.ExecutorService;
@@ -26,6 +27,7 @@ public class ServerSide {
     Bu queue gelen objectleri tutuyor. Daha sonra bu objectleri bir thread subscriber gibi ekrana bastıracak
     */
     private static LinkedBlockingQueue<Message> comingMessages = new LinkedBlockingQueue<Message>(100);
+    static ArrayList<Double> droppedMessagesPriorities = new ArrayList<>();
 
     public static void main(String[] argv) throws Exception {
 
