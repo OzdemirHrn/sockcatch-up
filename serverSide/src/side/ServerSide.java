@@ -50,9 +50,6 @@ public class ServerSide {
             Socket connectionSocket = welcomeSocket.accept();
             System.out.println("Client connected!  " + connectionSocket.getPort());
             //Burada göndersem qmin ve qmax'ı ???????
-            ObjectOutputStream toServerQminQmax;
-            toServerQminQmax = new ObjectOutputStream(connectionSocket.getOutputStream());
-            toServerQminQmax.writeObject(Qmin+" "+Qmax);
 
 
             WelcomeMessages welcomeMessages = new WelcomeMessages(connectionSocket, comingMessages);
