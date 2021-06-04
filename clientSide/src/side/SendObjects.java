@@ -19,7 +19,7 @@ import static side.DelayObject.takeWaitingTime;
 public class SendObjects implements Runnable {
 
 
-    final static int limitOfMessage = 5000;
+    final static int limitOfMessage = 50000;
     private final String topic;
     private final int sendObjectSleep;
     private LinkedBlockingDeque<Message> outgoingMessage;

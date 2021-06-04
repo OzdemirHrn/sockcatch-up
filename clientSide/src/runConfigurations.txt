@@ -1,8 +1,5 @@
-18
+16
 topic createObjectSleep sendObjectSleep capacityOfQueue datasetRow sizeOfSensor sensorType
-Temperature_Comedor_Sensor 1 50 1000000 21 1 1
-Temperature_Habitacion_Sensor 1 50 1000000 22 9 1
-Weather_Temperature 1 50 1000000 23 2 2
 CO2_Comedor_Sensor 1 50 1000000 24 8 2
 CO2_Habitacion_Sensor 1 50 1000000 25 3 2
 Humedad_Comedor_Sensor 1 50 1000000 26 7 2
@@ -18,3 +15,4 @@ Meteo_Exterior_Sol_Sud 1 50 1000000 35 4 3
 Meteo_Exterior_Piranometro 1 50 1000000 36 2 4
 Temperature_Exterior_Sensor 1 50 1000000 37 2 4
 Humedad_Exterior_Sensor 1 50 1000000 38 2 4
+Weather_Temperature 1 50 1000000 23 2 2
