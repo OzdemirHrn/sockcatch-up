@@ -30,7 +30,7 @@ public class ClientSide {
         Bu argument topic olarak görev yapıyor.
         Bu client sadece bu topice message yolluyor
         */
-        Socket clientSocket = new Socket("192.168.1.136", 6789);
+        Socket clientSocket = new Socket("192.168.1.40", 6789);
 
         /*
         Message sınıfından topic ve random value argumentleriyle
