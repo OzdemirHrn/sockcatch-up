@@ -76,19 +76,22 @@ public class SendDelayedObject implements Runnable {
                             fileWriter)) {
 
                         switch (delayedMessage.getCounter()) {
-                            case 1 -> {
+                            case 1 : {
                                 MultipleClients.counter.incrementSendMessageInSecondAttempt();
                                 MultipleClients.delayedMessagesPriority.get(1).add(delayedMessage.getInitialPriorityIfDelayed());
+                                break;
                             }
-                            case 2 -> {
+                            case 2 : {
                                 MultipleClients.counter.incrementSendMessageInThirdAttempt();
                                 MultipleClients.delayedMessagesPriority.get(2).add(delayedMessage.getInitialPriorityIfDelayed());
+                                break;
                             }
-                            case 3 -> {
+                            case 3 : {
                                 MultipleClients.counter.incrementSendMessageInFourthAttempt();
                                 MultipleClients.delayedMessagesPriority.get(3).add(delayedMessage.getInitialPriorityIfDelayed());
+                                break;
                             }
-                            default -> System.err.println("Illegal Message Delayed Counter Value");
+                            default : System.err.println("Illegal Message Delayed Counter Value");
                         }
 
                         MultipleClients.counter.decrementtsizeOfDelayedQueue();
