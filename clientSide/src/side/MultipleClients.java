@@ -27,6 +27,10 @@ public class MultipleClients {
         for (int i = 2; i < RunConfig.returnNumberOfSensors() + 2; i++) {
             new Thread(new RunSensorsSeparately(RunConfig.readConfig(i))).start();
         }
+//
+//        Runnable receivingQueueOcc = new QueueOccupancyReceiver(clientSocket);
+//        Thread threadReceivingQueueOcc = new Thread(receivingQueueOcc);
+//        threadReceivingQueueOcc.start();
 
     }
 }
