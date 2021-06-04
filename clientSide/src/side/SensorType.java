@@ -29,7 +29,7 @@ public class SensorType {
     }
 
     private int fastwithSleep() {
-        if (this.counterFastWithSleep < 30) {
+        if (this.counterFastWithSleep < 70) {
             this.counterFastWithSleep++;
             return 200;
         } else {

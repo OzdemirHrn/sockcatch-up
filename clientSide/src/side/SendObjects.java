@@ -5,12 +5,11 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.text.DecimalFormat;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static side.DelayObject.takeWaitingTime;
+
 
 /**
  * Objectleri Server'a gönderen Thread ve onun Runnable classı
@@ -24,19 +23,13 @@ public class SendObjects implements Runnable {
     private final int sendObjectSleep;
     private LinkedBlockingDeque<Message> outgoingMessage;
     private final Socket clientSocket;
-    static final double award = 4;
     private SensorType sensorType;
-    static final double rttAlpha=0.05;
     ClientAnalysis clientAnalysis = new ClientAnalysis();
-    BlockingQueue<DelayObject> DQ;
 
 
-    Rtt rtt = new Rtt(rttAlpha);
-    NashEq nashEq = new NashEq();
-    boolean rttFirstCome = false;
 
-    public SendObjects(BlockingQueue<DelayObject> DQ, LinkedBlockingDeque<Message> outgoingMessage, Socket clientSocket, int sendObjectSleep, String topic,int sensorType) {
-        this.DQ = DQ;
+    public SendObjects(LinkedBlockingDeque<Message> outgoingMessage, Socket clientSocket, int sendObjectSleep, String topic, int sensorType) {
+
         this.topic = topic;
         this.outgoingMessage = outgoingMessage;
         this.clientSocket = clientSocket;
@@ -49,7 +42,6 @@ public class SendObjects implements Runnable {
 
         final float start1 = System.nanoTime();
         IPriority priority = new PriorityKorcak();
-        double rttOfMessage = 0;
         double passengerPriority;
 
         FileWriter fileWriter = new FileOperations().createInputfile(topic);
@@ -73,79 +65,34 @@ public class SendObjects implements Runnable {
                     passenger.setPriority(passengerPriority);
                     passenger.setInitialPriorityIfDelayed(passengerPriority);
 
+                    //priority.setCounter(1);
+                    outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
+                    MultipleClients.counter.incrementSendMessageInFirstAttempt();
+                    MultipleClients.delayedMessagesPriority.get(0).add(passengerPriority);
+                    System.out.println();
+                    passenger.setCounter(passenger.getCounter() + 1);
+
+                    //Son gönderdiğim mesaj <-- First Consistent Data
+                    priority.setFirstConsistentData(passenger.getMessage());
+                    //priority.setTempAnnealing(0.1);
+                    outToServer.writeObject(outgoingMessage.poll());
+
+
                     //timer
-                    long rttTimeStart = System.nanoTime();
-
-                    if (nashEq.action(passenger.getSize(),
-                            rttOfMessage,
-                            passengerPriority,
-                            award,
-                            QueueOccupancyReceiver.queueOccupancy,
-                            QueueOccupancyReceiver.queueOccupancy,
-                            fileWriter)) {
-
-                        passenger.setRtt(rttOfMessage);
-                        //priority.setCounter(1);
-                        outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
-                        MultipleClients.counter.incrementSendMessageInFirstAttempt();
-                        MultipleClients.delayedMessagesPriority.get(0).add(passengerPriority);
-                        System.out.println();
-                        passenger.setCounter(passenger.getCounter() + 1);
-
-                        //Son gönderdiğim mesaj <-- First Consistent Data
-                        priority.setFirstConsistentData(passenger.getMessage());
-                        //priority.setTempAnnealing(0.1);
-                        outToServer.writeObject(outgoingMessage.poll());
+                    MultipleClients.counter.incrementTotalMessageCounter();
 
 
-                        long sampleRtt = (System.nanoTime() - rttTimeStart);
+                    clientAnalysis.publishersTimer(MultipleClients.counter);
 
-                        if (rttFirstCome) {
-                            rttOfMessage = rtt.calculateRTT(sampleRtt, rtt.calculateEstimatedRtt(sampleRtt));
-                        }
+                    float son = System.nanoTime();
+                    DecimalFormat df = new DecimalFormat("#.###");
+                    double time = son - start1;
+                    double time1 = time % 1000000;
+                    time = (time - time1) / 1000000;
+                    String counterTime = "Counter: " + MultipleClients.counter.getCounter() + " Timer: " + df.format(time) + "  ";
+                    fileWriter.write(counterTime);
+                    System.out.println(counterTime);
 
-
-                        rttFirstCome = true;
-
-                        //timer
-                        MultipleClients.counter.incrementTotalMessageCounter();
-
-
-                        clientAnalysis.publishersTimer(MultipleClients.counter);
-
-                        float son = System.nanoTime();
-                        DecimalFormat df = new DecimalFormat("#.###");
-                        double time = son - start1;
-                        double time1 = time % 1000000;
-                        time = (time - time1) / 1000000;
-                        String counterTime = "Counter: " + MultipleClients.counter.getCounter() + " Timer: " + df.format(time) + "  ";
-                        fileWriter.write(counterTime);
-                        System.out.println(counterTime);
-                    }
-
-                    /*
-                     * Nash Eq. Gönderme kararı alınca buraya düşecek.
-                     */
-
-                    else {
-                        System.out.println("Don't Send to Server! Wait Until a While!");
-                        fileWriter.write("Don't Send to Server! Wait Until a While!\n");
-                        //priority.setCounter(priority.getCounter()+1);
-                        passenger.setPriority(passengerPriority);
-                        passenger.setDelayedTrue();
-                        passenger.setRtt(rttOfMessage);
-                        double delayTime = takeWaitingTime(passenger.getSize(),
-                                rttOfMessage,
-                                passengerPriority,
-                                award,
-                                QueueOccupancyReceiver.queueOccupancy,
-                                QueueOccupancyReceiver.queueOccupancy);
-                        passenger.setCounter(passenger.getCounter() + 1);
-                        DelayObject delayObject = new DelayObject(outgoingMessage.poll(), delayTime);
-                        MultipleClients.counter.incrementsizeOfDelayedQueue();
-                        DQ.add(delayObject);
-
-                    }
 
                 } catch (IOException ex) {
                     System.out.println("Server connection closed!");
@@ -177,15 +124,9 @@ public class SendObjects implements Runnable {
         try {
 
             clientAnalysis.printArr(fileWriter);
-            fileWriter.write("DQ Size= "+DQ.size());
             FileWriter fileWriterCounter = new FileOperations().createInputfile("Total & Dropped Message Counter");
             fileWriterCounter.write("Total Dropped Messages: " + MultipleClients.counter.getDroppedMessagesAfterSeveralTrialAttempt() + "\n" +
-                    "Has Send in First Attempt: " + MultipleClients.counter.getSendMessageInFirstAttempt() + "\n" +
-                    "Has Send in Second Attempt: " + MultipleClients.counter.getSendMessageInSecondAttempt() + "\n" +
-                    "Has Send in Third Attempt: " + MultipleClients.counter.getSendMessageInThirdAttempt() + "\n" +
-                    "Has Send in Fourth Attempt: " + MultipleClients.counter.getSendMessageInFourthAttempt()+ "\n"+
-                    "Delayed Queue Size After Terminated The Program: "+ MultipleClients.counter.getsizeOfDelayedQueue()
-
+                    "Has Send in First Attempt: " + MultipleClients.counter.getSendMessageInFirstAttempt() + "\n"
             );
             fileWriterCounter.close();
         } catch (IOException e) {

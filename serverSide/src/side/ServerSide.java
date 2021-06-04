@@ -54,11 +54,11 @@ public class ServerSide {
 
 
             WelcomeMessages welcomeMessages = new WelcomeMessages(connectionSocket, comingMessages);
-            QueueInfo queueInfo = new QueueInfo(connectionSocket,comingMessages);
+
 
 
             allClients.add(welcomeMessages);
-            service.submit(queueInfo);
+
             service.submit(welcomeMessages);
 
         }
