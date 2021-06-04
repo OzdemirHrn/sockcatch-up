@@ -20,7 +20,7 @@ public class PriorityKorcak implements IPriority {
         } else {
             priority = 1 / (21 * (1 - percentageDifference) - counter);
 
-            System.out.println("priority=" + priority + " counter= " + counter);
+           // System.out.println("priority=" + priority + " counter= " + counter);
 
             if (priority >= 1 || priority < 0) {
                 priority = 1;
@@ -49,7 +49,7 @@ public class PriorityKorcak implements IPriority {
         if (percentageDiff == 0) return Integer.MAX_VALUE;
         double retDiff = Double.parseDouble(new DecimalFormat("##.###").format(percentageDiff).replace(',', '.'));
         if (retDiff < 0.001) return 0;
-        System.out.println("Difference= "+ retDiff);
+       // System.out.println("Difference= "+ retDiff);
         return retDiff;
     }
 

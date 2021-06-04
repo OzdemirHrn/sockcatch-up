@@ -89,7 +89,7 @@ public class SendObjects implements Runnable {
                         outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
                         MultipleClients.counter.incrementSendMessageInFirstAttempt();
                         MultipleClients.delayedMessagesPriority.get(0).add(passengerPriority);
-                        System.out.println();
+                       // System.out.println();
                         passenger.setCounter(passenger.getCounter() + 1);
 
                         //Son gönderdiğim mesaj <-- First Consistent Data
@@ -120,7 +120,7 @@ public class SendObjects implements Runnable {
                         time = (time - time1) / 1000000;
                         String counterTime = "Counter: " + MultipleClients.counter.getCounter() + " Timer: " + df.format(time) + "  ";
                         fileWriter.write(counterTime);
-                        System.out.println(counterTime);
+                        //System.out.println(counterTime);
                     }
 
                     /*
