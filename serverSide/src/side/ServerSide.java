@@ -21,7 +21,7 @@ public class ServerSide {
     static final int droppedTotal = 0;
     private static ExecutorService service = Executors.newFixedThreadPool(100);
     private static Queue<WelcomeMessages> allClients = new LinkedList();
-    static float Qmin=20,Qmax=80;
+
 
     /*
     Bu queue gelen objectleri tutuyor. Daha sonra bu objectleri bir thread subscriber gibi ekrana bastıracak
@@ -50,10 +50,6 @@ public class ServerSide {
             Socket connectionSocket = welcomeSocket.accept();
             System.out.println("Client connected!  " + connectionSocket.getPort());
             //Burada göndersem qmin ve qmax'ı ???????
-            ObjectOutputStream toServerQminQmax;
-            toServerQminQmax = new ObjectOutputStream(connectionSocket.getOutputStream());
-            toServerQminQmax.writeObject(Qmin+" "+Qmax);
-
 
             WelcomeMessages welcomeMessages = new WelcomeMessages(connectionSocket, comingMessages);
 
