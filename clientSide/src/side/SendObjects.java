@@ -128,7 +128,7 @@ public class SendObjects implements Runnable {
                      */
 
                     else {
-                        System.out.println("Don't Send to Server! Wait Until a While!");
+                       // System.out.println("Don't Send to Server! Wait Until a While!");
                         fileWriter.write("Don't Send to Server! Wait Until a While!\n");
                         //priority.setCounter(priority.getCounter()+1);
                         passenger.setPriority(passengerPriority);
