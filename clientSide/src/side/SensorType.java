@@ -29,34 +29,35 @@ public class SensorType {
     }
 
     private int fastwithSleep() {
-        if (this.counterFastWithSleep < 50) {
+        if (this.counterFastWithSleep < 70) {
             this.counterFastWithSleep++;
-            return 20;
+            return 200;
         } else {
             this.counterFastWithSleep = 0;
-            return ((int) ((Math.random() * 10+2)*1000));
+            return ((int) ((Math.random() * 10+20)*1000));
         }
 
     }
 
+
     private int normalSending() {
-        return 500;
+        return 800;
     }
 
     private int fastSending() {
-        return 200;
+        return 400;
     }
 
     private int randomSending() {
         int randomSending = random.nextInt(100);
 
         if (randomSending < 3) {
-            randomSending = 50;
+            randomSending = 100;
         } else if (randomSending < 6) {
-            randomSending = 2000;
+            randomSending = 3000;
         }
         else {
-            randomSending = randomSending * 10+200;
+            randomSending = randomSending * 10+400;
         }
 //         else if (randomSending < 26) {
 //
